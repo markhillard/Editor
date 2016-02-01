@@ -106,13 +106,13 @@ $(document).ready(function () {
     // BEGIN LOCAL STORAGE
     // ------------------------------
     if (localStorage.getItem('htmlcode') === null) {
-        localStorage.setItem('htmlcode');
+        localStorage.setItem('htmlcode', '');
     }
     if (localStorage.getItem('csscode') === null) {
-        localStorage.setItem('csscode');
+        localStorage.setItem('csscode', '');
     }
     if (localStorage.getItem('jscode') === null) {
-        localStorage.setItem('jscode');
+        localStorage.setItem('jscode', '');
     }
     
     // get local storage
