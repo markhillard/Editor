@@ -106,9 +106,15 @@ $(document).ready(function () {
     // BEGIN LOCAL STORAGE
     // ------------------------------
     // get local storage
-    editorHTML.setValue(localStorage.getItem('htmlcode'));
-    editorCSS.setValue(localStorage.getItem('csscode'));
-    editorJS.setValue(localStorage.getItem('jscode'));
+    if (localStorage.getItem('htmlcode') === null || localStorage.getItem('csscode') === null || localStorage.getItem('jscode') === null) {
+        localStorage.setItem('htmlcode');
+        localStorage.setItem('csscode');
+        localStorage.setItem('jscode');
+    } else {
+        editorHTML.setValue(localStorage.getItem('htmlcode'));
+        editorCSS.setValue(localStorage.getItem('csscode'));
+        editorJS.setValue(localStorage.getItem('jscode'));
+    }
     // ------------------------------
     // END LOCAL STORAGE
     
