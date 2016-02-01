@@ -1,0 +1,203 @@
+/* Snap (Custom) */
+
+
+
+/* Fonts & Icons
+================================================== */
+
+@font-face {
+    font-family:"Hack";
+    src:url("../fonts/hack-regular-webfont.eot");
+    src:url("../fonts/hack-regular-webfont.eot#iefix") format("embedded-opentype"),
+        url("../fonts/hack-regular-webfont.woff") format("woff"),
+        url("../fonts/hack-regular-webfont.woff2") format("woff2"),
+        url("../fonts/hack-regular-webfont.ttf") format("truetype"),
+        url("../fonts/hack-regular-webfont.svg#entypo") format("svg");
+    font-weight:normal;
+    font-style:normal;
+}
+
+
+
+/* Preload Images
+================================================== */
+
+/*
+body::after {
+content:url("images/img01.jpg")
+        url("images/img02.jpg")
+        url("images/img03.jpg");
+display:none;
+}
+*/
+
+
+
+/* CodeMirror Overrides
+================================================== */
+
+.CodeMirror {
+font-family:"Source Code Pro", monospace;
+font-size:.9rem;
+height:100vh;
+}
+
+.CodeMirror-lines {
+padding:0;
+}
+
+.CodeMirror-scrollbar-filler,
+.CodeMirror-gutter-filler {
+background-color:transparent;
+}
+
+.CodeMirror-overlayscroll-horizontal {
+height:10px;
+transition:height ease 300ms;
+}
+
+.CodeMirror-overlayscroll-horizontal:hover,
+.CodeMirror-overlayscroll-horizontal.hold {
+height:15px;
+}
+
+.CodeMirror-overlayscroll-vertical {
+transition:width ease 300ms;
+width:10px;
+}
+
+.CodeMirror-overlayscroll-vertical:hover,
+.CodeMirror-overlayscroll-vertical.hold {
+width:15px;
+}
+
+.CodeMirror-overlayscroll-horizontal div,
+.CodeMirror-overlayscroll-vertical div {
+background:rgba(255,255,255,.05);
+border-radius:0;
+}
+
+
+
+/* jQuery UI Overrides
+================================================== */
+
+.ui-resizable-e {
+background-color:#0e0f13;
+cursor:col-resize !important;
+right:-16px !important;
+width:16px !important;
+}
+
+.ui-resizable-s {
+bottom:-16px !important;
+cursor:row-resize !important;
+height:16px !important;
+}
+
+
+
+/* Custom Styles
+================================================== */
+
+#editor {}
+
+#editor .code-pane,
+#editor .preview-pane {
+float:left;
+height:100vh;
+margin:0 !important;
+}
+
+#editor .code-pane {
+width:calc(50% - 16px);
+}
+
+#editor .preview-pane {
+width:calc(50% + 16px);
+}
+
+[class^="code-pane-"] {
+border-right:1px solid #333540;
+display:flex;
+flex-direction:column;
+height:calc(100% / 3);
+position:relative;
+}
+
+[class^="code-pane-"]::before {
+background-color:#0e0f13;
+color:#6d8a88;
+display:block;
+font-size:11px;
+height:auto;
+left:0;
+position:relative;
+text-align:right;
+width:calc(100% + 1px);
+}
+
+.code-pane-css,
+.code-pane-js {
+min-height:17px;
+}
+
+.code-pane-html::before { content:"HTML"; }
+.code-pane-css::before { border-top:1px solid #333540; content:"CSS"; }
+.code-pane-js::before { border-top:1px solid #333540; content:"JS"; }
+
+#preview {
+display:block;
+height:100%;
+margin-left:16px;
+width:calc(100% - 16px);
+}
+
+.toggle-lineWrapping,
+.run-script {
+background-color:#333540;
+color:#6d8a88;
+cursor:pointer;
+display:block;
+font-size:11px;
+height:16px;
+padding:0 5px;
+position:absolute;
+text-align:center;
+text-decoration:none;
+top:1px;
+z-index:90;
+}
+
+.toggle-lineWrapping { right:40px; }
+.run-script { right:106px; }
+
+.toggle-lineWrapping.lw-on,
+.run-script:active {
+background-color:#6d8a88;
+color:#333540;
+}
+
+.code-pane-html .toggle-lineWrapping {
+top:0;
+}
+
+
+
+/* Media Queries (Screen Width)
+================================================== */
+
+/* Mobile & Tablet */
+@media only screen and (max-width:800px) {
+    
+}
+
+/* Mobile */
+@media only screen and (max-width:479px) {
+    
+}
+
+/* Tablet */
+@media only screen and (min-width:480px) and (max-width:800px) {
+    
+}

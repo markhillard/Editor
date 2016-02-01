@@ -1,0 +1,270 @@
+/* Snap (Base) */
+
+
+
+/* CSS Reset
+================================================== */
+
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video {
+border:0;
+font:inherit;
+font-size:100%;
+margin:0;
+padding:0;
+vertical-align:baseline;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+display:block;
+}
+
+body { line-height:1; }
+ul,ol { list-style:none; }
+blockquote,q { quotes:none; }
+blockquote::before,blockquote::after,q::before,q::after { content:none; }
+table { border-collapse:collapse; border-spacing:0; }
+
+button,input:not([type="checkbox"],[type="radio"]),textarea { appearance:none; background:none; }
+button::-moz-focus-inner,input::-moz-focus-inner { border:0; padding:0; }
+
+* { -webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color:transparent; }
+
+*,*::before,*::after { box-sizing:border-box; }
+*,*:focus { outline:none; }
+
+
+
+/* Global Page Styles
+================================================== */
+
+html,body {
+-webkit-font-smoothing:antialiased;
+-webkit-text-size-adjust:100%;
+font-family:"Source Code Pro", monospace;
+font-size:100%;
+font-weight:400;
+height:100%;
+line-height:1.45;
+overflow:hidden;
+}
+
+/* Transitions */
+a { transition:all 200ms ease; }
+.button,button,input,textarea { transition:background 200ms ease; }
+
+/* Highlighting */
+::selection { background-color:#6495ed; color:#fff; }
+
+
+
+/* Typography (http://type-scale.com/)
+================================================== */
+
+h1,h2,h3,h4 { font-weight:inherit; line-height:1.2; margin:1.414rem 0; }
+h1 a,h2 a,h3 a,h4 a { font-size:inherit; font-weight:inherit; }
+
+h1 { font-size:3.998rem; }
+h2 { font-size:2.827rem; }
+h3 { font-size:1.999rem; }
+h4 { font-size:1.414rem; }
+
+p { margin-bottom:1.3rem; }
+
+em { font-style:italic; font-weight:300; }
+strong { font-weight:600; }
+small { font-size:.707rem; }
+
+hr {
+border:solid #ddd;
+border-width:1px 0 0;
+clear:both;
+height:0;
+margin:3% 0;
+}
+
+
+
+/* Block & Inline Quotations
+================================================== */
+
+blockquote {
+border-left:6px solid #ddd;
+margin:1.875rem 0;
+padding:0 1.25rem;
+quotes:"\201c""\201d""\2018""\2019";
+text-align:left;
+}
+
+blockquote::before {
+color:#ddd;
+content:open-quote;
+font-size:4rem;
+line-height:.1;
+margin-right:1rem;
+vertical-align:-24px;
+}
+
+q { quotes:"\201c""\201d""\2018""\2019"; }
+q::before { content:open-quote"\0020"; }
+q::after { content:"\0020"close-quote; }
+
+blockquote,blockquote p,q,q p { color:#777; font-size:1rem; line-height:1.45; }
+blockquote p,q p { display:inline; }
+
+blockquote cite { color:#555; display:block; font-style:italic; margin-top:.875rem; }
+q cite { color:#555; display:inline; font-style:italic; }
+blockquote cite::before,q cite::before  { content:"\0020""\2014""\0020"; }
+
+
+
+/* Links
+================================================== */
+
+a,a:link,a:visited { color:#444; text-decoration:underline; }
+p a,p a:link,p a:visited { line-height:inherit; }
+a:hover,a:active { color:#000; }
+
+
+
+/* Lists
+================================================== */
+
+ul,ol { margin:1.25rem; text-align:left; }
+ul { list-style:none outside; }
+ol { list-style-type:decimal; }
+
+ul.circle,ul.disc,ul.square { margin-left:1.875rem; }
+ul.circle { list-style:circle outside; }
+ul.disc { list-style:disc outside; }
+ul.square { list-style:square outside; }
+
+ul ul,ul ol,ol ol,ol ul { list-style:inherit; margin:.5rem 0 0 1.875rem; }
+ul ul li,ul ol li,ol ol li,ol ul li { margin-bottom:.5rem; }
+li { margin-bottom:1rem; }
+
+
+
+/* Images
+================================================== */
+
+img { display:block; }
+
+/* responsive */
+.resp { min-width:100%; max-width:100%; height:auto; }
+
+
+
+/* Buttons
+================================================== */
+
+.button,button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+background-color:#efefef;
+border:none;
+border-radius:3px;
+box-shadow:0 3px #ddd;
+color:#444;
+cursor:pointer;
+display:inline-block;
+font-family:"Open Sans", sans-serif;
+font-size:1rem;
+font-weight:300;
+line-height:normal;
+margin:0 0 1.25rem;
+padding:.865rem 1.365rem;
+text-decoration:none !important;
+}
+
+.button:hover,button:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover {
+background-color:#eaeaea;
+}
+
+.button:active,button:active,
+input[type="button"]:active,
+input[type="reset"]:active,
+input[type="submit"]:active {
+box-shadow:none;
+position:relative;
+top:3px;
+}
+
+.full-width {
+text-align:center;
+width:100%;
+}
+
+
+
+/* Form Elements
+================================================== */
+
+form { margin-bottom:1.25rem; }
+
+input[type="email"],input[type="password"],
+input[type="search"],input[type="text"],
+textarea {
+background-color:#efefef;
+border:none;
+border-radius:3px;
+box-shadow:0 3px #ddd inset;
+color:#444;
+display:block;
+font-family:"Open Sans", sans-serif;
+font-size:1rem;
+font-weight:300;
+height:auto;
+margin:0 0 1.25rem;
+max-width:100%;
+padding:.865rem;
+width:100%;
+}
+
+input[type="email"]:focus,input[type="password"]:focus,
+input[type="search"]:focus,input[type="text"]:focus,
+textarea:focus {
+background-color:#eaeaea;
+}
+
+textarea {
+overflow:auto;
+resize:none;
+}
+
+
+
+/* Miscellaneous
+================================================== */
+
+.add-bottom { margin-bottom:4% !important; }
+.add-top { margin-top:4% !important; }
+
+.half-bottom { margin-bottom:2% !important; }
+.half-top { margin-top:2% !important; }
+
+.remove-bottom { margin-bottom:0 !important; }
+.remove-top { margin-top:0 !important; }
+
+.left { float:left; }
+.right { float:right; }
+
+
+
+/* Visibility Helpers (Use Sparingly)
+================================================== */
+
+@media only screen and (min-width:801px) {
+    .visible-mobile,.visible-tablet,.hidden-desktop { display:none !important; }
+}
+
+@media only screen and (min-width:480px) and (max-width:800px) {
+    .visible-mobile,.hidden-tablet,.visible-desktop { display:none !important; }
+}
+
+@media only screen and (max-width:479px) {
+    .hidden-mobile,.visible-tablet,.visible-desktop { display:none !important; }
+}
