@@ -106,13 +106,16 @@ $(document).ready(function () {
     // BEGIN LOCAL STORAGE
     // ------------------------------
     if (localStorage.getItem('htmlcode') === null) {
-        localStorage.setItem('htmlcode', '');
+        var defaultHTML = '<main>\n    <div>\n        <h1>Editor<\/h1>\n        <p>It\'s an editor.<\/p>\n    <\/div>\n<\/main>';
+        localStorage.setItem('htmlcode', defaultHTML);
     }
     if (localStorage.getItem('csscode') === null) {
-        localStorage.setItem('csscode', '');
+        var defaultCSS = '@import url(\"https://fonts.googleapis.com/css?family=Droid+Sans\");\n\nbody {\n    background-color:#282a36;\n}\n\nmain {\n    left:50%;\n    position:absolute;\n    top:50%;\n    transform:translate(-50%,-50%);\n}\n\nh1 {\n    color:#fff;\n    font-family:\"Droid Sans\";\n    font-size:9rem;\n    margin:0;\n}\n\np {\n    color:#fff;\n    display:block;\n    font-family:\"Droid Sans\";\n    text-align:center;\n}\n\n';
+        localStorage.setItem('csscode', defaultCSS);
     }
     if (localStorage.getItem('jscode') === null) {
-        localStorage.setItem('jscode', '');
+        var defaultJS = 'alert(\'Pow! Right in the kisser.\');';
+        localStorage.setItem('jscode', defaultJS);
     }
     
     // get local storage
@@ -313,7 +316,7 @@ $(document).ready(function () {
     
     // run script
     $('.run-script').on('click', function () {
-        //loadJQ();
+        // loadJQ();
         loadJS();
         loadCSS();
         loadHTML();
