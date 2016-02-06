@@ -5,8 +5,15 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
         
 <url>
-    <loc>http://markhillard.github.io/Snap/</loc>
-    <lastmod>2015-07-26T07:47:52+00:00</lastmod>
-    <changefreq>monthly</changefreq>
+  <loc>http://markhillard.github.io/Editor/</loc>
+  <lastmod>2016-02-06T23:42:27+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>http://markhillard.github.io/Editor/preview.html</loc>
+  <lastmod>2016-02-06T23:42:27+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.80</priority>
 </url>
 </urlset>
