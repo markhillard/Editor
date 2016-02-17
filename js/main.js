@@ -55,11 +55,25 @@ $(document).ready(function () {
     
     // BEGIN CODE LOADING
     // ------------------------------
+    var html;
+    
     // load js
     function loadJS() {
-        var body = $('#preview').contents().find('body');
+        var iframe = document.getElementById('preview');
         var js = editorJS.getValue();
-        body.html(html + '<script>' + js + '<\/script>');
+        var preview;
+        
+        if (iframe.contentDocument) {
+            preview = iframe.contentDocument;
+        } else if (iframe.contentWindow) {
+            preview = iframe.contentWindow.document;
+        } else {
+            preview = iframe.document;
+        }
+        
+        preview.open();
+        preview.write(html + '<script>' + js + '<\/script>');
+        preview.close();
     }
     
     // load css
@@ -68,8 +82,6 @@ $(document).ready(function () {
         var css = editorCSS.getValue();
         head.html('<style>' + css + '</style>');
     }
-    
-    var html;
     
     // load html
     function loadHTML() {
@@ -93,7 +105,7 @@ $(document).ready(function () {
         }
         
         preview.open();
-        preview.write(editorHTML.getValue());
+        preview.write(html);
         preview.close();
         loadCSS();
     }
@@ -156,24 +168,23 @@ $(document).ready(function () {
     // BEGIN DEPENDENCY INJECTION
     // ------------------------------
     // load jquery
-    function loadJQ() {
-        var iframe = document.getElementById('preview');
-        var preview;
+    function loadJQ(url) {
+        var jqDep;
         
-        if (iframe.contentDocument) {
-            preview = iframe.contentDocument;
-        } else if (iframe.contentWindow) {
-            preview = iframe.contentWindow.document;
+        // if jquery script tags are included
+        if (url.indexOf('<') !== -1) {
+            jqDep = url;
         } else {
-            preview = iframe.document;
+            jqDep = '<script src="' + url + '"><\/script>';
         }
         
-        var jq = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"><\/script>';
-        var script = '<html><head>' + jq + '</head><body><\/body><\/html>';
-        
-        preview.open();
-        preview.write(script);
-        preview.close();
+        // if jquery is already included
+        if (html.indexOf(jqDep) !== -1) {
+            alert('jquery already included');
+        } else {
+            html = jqDep + '\n\n' + html;
+            editorHTML.setValue(html);
+        }
     }
     // ------------------------------
     // END DEPENDENCY INJECTION
@@ -316,10 +327,14 @@ $(document).ready(function () {
     
     // run script
     $('.run-script').on('click', function () {
-        // loadJQ();
         loadJS();
         loadCSS();
         loadHTML();
+    });
+    
+    // get jquery
+    $('.get-jq').on('click', function () {
+        loadJQ('https://code.jquery.com/jquery-2.2.0.min.js');
     });
     // ------------------------------
     // END UTILITY FUNCTIONS

@@ -154,7 +154,8 @@ width:calc(100% - 16px);
 }
 
 .toggle-lineWrapping,
-.run-script {
+.run-script,
+.get-jq {
 background-color:#333540;
 color:#6d8a88;
 cursor:pointer;
@@ -171,14 +172,17 @@ z-index:90;
 
 .toggle-lineWrapping { right:40px; }
 .run-script { right:106px; }
+.get-jq { right:106px; }
 
 .toggle-lineWrapping.lw-on,
-.run-script:active {
+.run-script:active,
+.get-jq:active {
 background-color:#6d8a88;
 color:#333540;
 }
 
-.code-pane-html .toggle-lineWrapping {
+.code-pane-html .toggle-lineWrapping,
+.code-pane-html .get-jq {
 top:0;
 }
 
