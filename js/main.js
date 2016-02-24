@@ -227,7 +227,7 @@ $(document).ready(function () {
             ui.element.siblings('.code-pane-css').css('height', windowHeight - currentHeight - $('.code-pane-js').height() + 'px');
             ui.element.siblings('.code-pane-js').css('height', windowHeight - currentHeight - $('.code-pane-css').height() + 'px');
         },
-        stop: function (e, ui) {
+        stop: function () {
             editorHTML.refresh();
             editorCSS.refresh();
             editorJS.refresh();
@@ -246,7 +246,7 @@ $(document).ready(function () {
             ui.element.siblings('.code-pane-js').css('height', windowHeight - currentHeight - $('.code-pane-html').height() + 'px');
             ui.element.siblings('.code-pane-html').css('height', windowHeight - currentHeight - $('.code-pane-js').height() + 'px');
         },
-        stop: function (e, ui) {
+        stop: function () {
             editorHTML.refresh();
             editorCSS.refresh();
             editorJS.refresh();
