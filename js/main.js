@@ -9,7 +9,8 @@
 
 
 $(document).ready(function () {
-    // BEGIN INITIALIZE CODEMIRROR
+    
+    // INITIALIZE CODEMIRROR
     // ------------------------------
     // js code
     var editorJS = document.editor = CodeMirror.fromTextArea(jscode, {
@@ -50,10 +51,10 @@ $(document).ready(function () {
         styleActiveLine: true
     });
     // ------------------------------
-    // END INITIALIZE CODEMIRROR
+    // INITIALIZE CODEMIRROR
     
     
-    // BEGIN CODE LOADING
+    // CODE LOADING
     // ------------------------------
     var html;
     
@@ -112,10 +113,10 @@ $(document).ready(function () {
     
     startHTML();
     // ------------------------------
-    // END CODE LOADING
+    // CODE LOADING
     
     
-    // BEGIN LOCAL STORAGE
+    // LOCAL STORAGE
     // ------------------------------
     if (localStorage.getItem('htmlcode') === null) {
         var defaultHTML = '<main>\n    <div>\n        <h1>Editor<\/h1>\n        <p>It\'s an editor.<\/p>\n    <\/div>\n<\/main>';
@@ -135,10 +136,10 @@ $(document).ready(function () {
     editorCSS.setValue(localStorage.getItem('csscode'));
     editorJS.setValue(localStorage.getItem('jscode'));
     // ------------------------------
-    // END LOCAL STORAGE
+    // LOCAL STORAGE
     
     
-    // BEGIN EDITOR UPDATES
+    // EDITOR UPDATES
     // ------------------------------
     // editor update (js)
     editorJS.on('change', function () {
@@ -162,10 +163,10 @@ $(document).ready(function () {
     // run editor update (html)
     loadHTML();
     // ------------------------------
-    // END EDITOR UPDATES
+    // EDITOR UPDATES
     
     
-    // BEGIN DEPENDENCY INJECTION
+    // DEPENDENCY INJECTION
     // ------------------------------
     // load jquery
     function loadJQ(url) {
@@ -187,10 +188,10 @@ $(document).ready(function () {
         }
     }
     // ------------------------------
-    // END DEPENDENCY INJECTION
+    // DEPENDENCY INJECTION
     
     
-    // BEGIN RESIZE FUNCTIONS
+    // RESIZE FUNCTIONS
     // ------------------------------
     // window dimensions
     var windowWidth = $(window).width();
@@ -253,10 +254,10 @@ $(document).ready(function () {
         }
     });
     // ------------------------------
-    // END RESIZE FUNCTIONS
+    // RESIZE FUNCTIONS
     
     
-    // BEGIN GENERAL FUNCTIONS
+    // GENERAL FUNCTIONS
     // ------------------------------
     // indent wrapped lines
     function indentWrappedLines(editor) {
@@ -290,10 +291,10 @@ $(document).ready(function () {
         $(vScroll).add(hScroll).removeClass('hold');
     });
     // ------------------------------
-    // END GENERAL FUNCTIONS
+    // GENERAL FUNCTIONS
     
     
-    // BEGIN UTILITY FUNCTIONS
+    // UTILITY FUNCTIONS
     // ------------------------------
     // toggle line wrapping (html)
     $('.toggle-lineWrapping.html').on('click', function () {
@@ -337,11 +338,12 @@ $(document).ready(function () {
         loadJQ('https://code.jquery.com/jquery-2.2.0.min.js');
     });
     // ------------------------------
-    // END UTILITY FUNCTIONS
+    // UTILITY FUNCTIONS
     
     
     // refresh editor
     editorHTML.refresh();
     editorCSS.refresh();
     editorJS.refresh();
+    
 });
