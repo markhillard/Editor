@@ -335,7 +335,7 @@ $(document).ready(function () {
     
     // get jquery
     $('.get-jq').on('click', function () {
-        loadJQ('https://code.jquery.com/jquery-2.2.0.min.js');
+        loadJQ('http://code.jquery.com/jquery-latest.min.js');
     });
     // ------------------------------
     // UTILITY FUNCTIONS
