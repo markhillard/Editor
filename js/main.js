@@ -131,7 +131,7 @@ $(document).ready(function () {
         localStorage.setItem('htmlcode', defaultHTML);
     }
     if (localStorage.getItem('csscode') === null) {
-        var defaultCSS = '@import url(\"https:\/\/fonts.googleapis.com\/css?family=Droid+Sans\");\n\nbody {\n    background-color:#282a36;\n    color:#fff;\n    font-family:\"Droid Sans\";\n    overflow:hidden;\n    text-align:center;\n}\n\nmain {\n    left:50%;\n    position:absolute;\n    top:50%;\n    transform:translate(-50%,-50%);\n}\n\nh1 {\n    font-size:9rem;\n    margin:0;\n}\n\np {\n    font-size:1rem;\n}';
+        var defaultCSS = '@import url(\"https:\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700\");\n\nbody {\n    background-color:#282a36;\n    color:#fff;\n    font-family:\"Droid Sans\";\n    overflow:hidden;\n    text-align:center;\n}\n\nmain {\n    left:50%;\n    position:absolute;\n    top:50%;\n    transform:translate(-50%,-50%);\n}\n\nh1 {\n    font-size:10rem;\n    font-weight:400;\n    margin:0;\n}\n\np {\n    font-size:1rem;\n    margin:1rem 0;\n}';
         localStorage.setItem('csscode', defaultCSS);
     }
     if (localStorage.getItem('jscode') === null) {
