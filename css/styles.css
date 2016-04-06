@@ -1,0 +1,270 @@
+/*
+███████ ██████  ██ ████████  ██████  ██████
+██      ██   ██ ██    ██    ██    ██ ██   ██
+█████   ██   ██ ██    ██    ██    ██ ██████
+██      ██   ██ ██    ██    ██    ██ ██   ██
+███████ ██████  ██    ██     ██████  ██   ██
+2016 ~ Mark Hillard | (mark@)markhillard.com
+*/
+
+
+
+/* CSS Reset
+================================================== */
+
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video {
+border:0;
+font:inherit;
+font-size:100%;
+margin:0;
+padding:0;
+vertical-align:baseline;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+display:block;
+}
+
+body { line-height:1; }
+ul,ol { list-style:none; }
+blockquote,q { quotes:none; }
+blockquote::before,blockquote::after,q::before,q::after { content:none; }
+table { border-collapse:collapse; border-spacing:0; }
+
+button,input:not([type="checkbox"],[type="radio"]),textarea { appearance:none; background:none; }
+button::-moz-focus-inner,input::-moz-focus-inner { border:0; padding:0; }
+
+* { -webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color:transparent; }
+
+*,*::before,*::after { box-sizing:border-box; }
+*,*:focus { outline:none; }
+
+
+
+/* Global Page Styles
+================================================== */
+
+html,body {
+-webkit-font-smoothing:antialiased;
+-webkit-text-size-adjust:100%;
+font-family:"Source Code Pro", monospace;
+font-size:100%;
+font-weight:400;
+line-height:1.45;
+overflow:hidden;
+}
+
+/* Highlighting */
+::selection { background-color:#282a36; color:#fff; }
+
+
+
+/* Visibility Helpers (Use Sparingly)
+================================================== */
+
+@media only screen and (min-width:801px) {
+    .visible-mobile,.visible-tablet,.hidden-desktop { display:none !important; }
+}
+
+@media only screen and (min-width:480px) and (max-width:800px) {
+    .visible-mobile,.hidden-tablet,.visible-desktop { display:none !important; }
+}
+
+@media only screen and (max-width:479px) {
+    .hidden-mobile,.visible-tablet,.visible-desktop { display:none !important; }
+}
+
+
+
+/* Fonts & Icons
+================================================== */
+
+@font-face {
+    font-family:"Hack";
+    src:url("../fonts/hack-regular-webfont.eot");
+    src:url("../fonts/hack-regular-webfont.eot#iefix") format("embedded-opentype"),
+        url("../fonts/hack-regular-webfont.woff") format("woff"),
+        url("../fonts/hack-regular-webfont.woff2") format("woff2"),
+        url("../fonts/hack-regular-webfont.ttf") format("truetype"),
+        url("../fonts/hack-regular-webfont.svg#entypo") format("svg");
+    font-weight:normal;
+    font-style:normal;
+}
+
+
+
+/* CodeMirror Overrides
+================================================== */
+
+.CodeMirror {
+font-family:"Source Code Pro", monospace;
+font-size:.9rem;
+height:100%;
+}
+
+.CodeMirror-sizer {
+height:100% !important;
+}
+
+.CodeMirror-lines {
+padding:0;
+}
+
+.CodeMirror-scrollbar-filler,
+.CodeMirror-gutter-filler {
+background-color:transparent;
+}
+
+.CodeMirror-overlayscroll-horizontal {
+height:10px;
+transition:height ease 300ms;
+}
+
+.CodeMirror-overlayscroll-horizontal:hover,
+.CodeMirror-overlayscroll-horizontal.hold {
+height:15px;
+}
+
+.CodeMirror-overlayscroll-vertical {
+transition:width ease 300ms;
+width:10px;
+}
+
+.CodeMirror-overlayscroll-vertical:hover,
+.CodeMirror-overlayscroll-vertical.hold {
+width:15px;
+}
+
+.CodeMirror-overlayscroll-horizontal div,
+.CodeMirror-overlayscroll-vertical div {
+background:rgba(255,255,255,.05);
+border-radius:0;
+}
+
+
+
+/* jQuery UI Overrides
+================================================== */
+
+.ui-resizable-e {
+background-color:#0e0f13;
+cursor:col-resize !important;
+right:-16px !important;
+width:16px !important;
+}
+
+
+
+/* Utility Bar
+================================================== */
+
+#utils {
+background-color:#282a36;
+border-bottom:16px solid #0e0f13;
+display:flex;
+flex-direction:row;
+}
+
+#utils > div {
+display:inline-block;
+font-size:0;
+vertical-align:top;
+}
+
+.logo {
+width:43px;
+}
+
+.logo img {
+display:block;
+height:auto;
+width:100%;
+}
+
+.toggle-lineWrapping.css,
+.toggle-lineWrapping.js {
+position:absolute;
+visibility:hidden;
+}
+
+
+
+/* Editor
+================================================== */
+
+#editor {
+display:flex;
+flex-direction:row;
+height:calc(100vh - 59px);
+}
+
+.code-swap {}
+
+.code-tools {
+position:absolute;
+right:0;
+}
+
+.code-swap span,
+.code-tools span {
+background-color:#282a36;
+color:#6d8a88;
+cursor:pointer;
+display:inline-block;
+font-size:1rem;
+font-weight:700;
+padding:10px 15px;
+text-decoration:none;
+}
+
+.code-swap span.active,
+.code-tools span.active {
+background-color:#6d8a88;
+color:#333540;
+}
+
+#preview {
+height:100%;
+margin-left:16px;
+width:calc(100% - 16px);
+}
+
+.code-pane {
+width:calc(50% - 16px);
+}
+
+.preview-pane {
+height:calc(100vh - 59px);
+width:calc(50% + 16px);
+}
+
+[class^="code-pane-"] {
+height:calc(100vh - 59px);
+position:relative;
+}
+
+.run-script:active,
+.get-jq:active {
+background-color:#6d8a88;
+color:#333540;
+}
+
+
+
+/* Media Queries (Screen Width)
+================================================== */
+
+/* Mobile & Tablet */
+@media only screen and (max-width:800px) {
+    
+}
+
+/* Mobile */
+@media only screen and (max-width:479px) {
+    
+}
+
+/* Tablet */
+@media only screen and (min-width:480px) and (max-width:800px) {
+    
+}

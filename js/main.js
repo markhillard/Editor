@@ -81,7 +81,15 @@ $(document).ready(function () {
     function loadCSS() {
         var head = $('#preview').contents().find('head');
         var css = editorCSS.getValue();
-        head.html('<style>' + css + '</style>');
+        var reset = '<link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">';
+        
+        if ($('.get-reset').hasClass('active')) {
+            head.html(reset + '<style>' + css + '</style>');
+            $('.get-reset').html('RESET &minus;');
+        } else {
+            head.html('<style>' + css + '</style>');
+            $('.get-reset').html('RESET &plus;');
+        }
     }
     
     // load html
@@ -195,13 +203,12 @@ $(document).ready(function () {
     // ------------------------------
     // window dimensions
     var windowWidth = $(window).width();
-    var windowHeight = $(window).height();
     
     // drag handle to resize code pane
     var resizeHandle = $('.code-pane');
     $(resizeHandle).resizable({
         handles: 'e',
-        minWidth: 179,
+        minWidth: 0,
         maxWidth: windowWidth - 16,
         resize: function (e, ui) {
             var currentWidth = ui.size.width;
@@ -215,50 +222,77 @@ $(document).ready(function () {
             editorJS.refresh();
         }
     });
-    
-    // drag handle to resize code pane (html)
-    var resizeHandleHTML = $('.code-pane-html');
-    $(resizeHandleHTML).resizable({
-        containment: ".code-pane",
-        handles: 's',
-        minHeight: 16,
-        maxHeight: windowHeight - 34,
-        resize: function (e, ui) {
-            var currentHeight = ui.size.height;
-            ui.element.siblings('.code-pane-css').css('height', windowHeight - currentHeight - $('.code-pane-js').height() + 'px');
-            ui.element.siblings('.code-pane-js').css('height', windowHeight - currentHeight - $('.code-pane-css').height() + 'px');
-        },
-        stop: function () {
-            editorHTML.refresh();
-            editorCSS.refresh();
-            editorJS.refresh();
-        }
-    });
-    
-    // drag handle to resize code pane (css)
-    var resizeHandleCSS = $('.code-pane-css');
-    $(resizeHandleCSS).resizable({
-        containment: ".code-pane",
-        handles: 's',
-        minHeight: 17,
-        maxHeight: windowHeight - 33,
-        resize: function (e, ui) {
-            var currentHeight = ui.size.height;
-            ui.element.siblings('.code-pane-js').css('height', windowHeight - currentHeight - $('.code-pane-html').height() + 'px');
-            ui.element.siblings('.code-pane-html').css('height', windowHeight - currentHeight - $('.code-pane-js').height() + 'px');
-        },
-        stop: function () {
-            editorHTML.refresh();
-            editorCSS.refresh();
-            editorJS.refresh();
-        }
-    });
     // ------------------------------
     // RESIZE FUNCTIONS
     
     
     // GENERAL FUNCTIONS
     // ------------------------------
+    // toggle line wrapping
+    var lineWrap = $('.toggle-lineWrapping');
+    
+    function wrapOff() {
+        $(lineWrap).css({
+            'position': 'absolute',
+            'visibility': 'hidden'
+        });
+    }
+    
+    // code pane swapping
+    var codeHTML = $('.code-pane-html');
+    var codeCSS = $('.code-pane-css');
+    var codeJS = $('.code-pane-js');
+    
+    $('.code-swap span').on('click', function () {
+        $(this).addClass('active').siblings().removeClass('active');
+        
+        if ($(this).is(':contains("HTML")')) {
+            wrapOff();
+            $('.toggle-lineWrapping.html').css({
+                'position': 'relative',
+                'visibility': 'visible'
+            });
+            $(codeHTML).css('top', 'auto');
+            $(codeCSS).css('top', 'auto');
+            $(codeJS).css('top', 'auto');
+        } else if ($(this).is(':contains("CSS")')) {
+            wrapOff();
+            $('.toggle-lineWrapping.css').css({
+                'position': 'relative',
+                'visibility': 'visible'
+            });
+            $(codeHTML).css('top', 'calc(-100% - 59px)');
+            $(codeCSS).css('top', '-100%');
+            $(codeJS).css('top', '-100%');
+        } else if ($(this).is(':contains("JS")')) {
+            wrapOff();
+            $('.toggle-lineWrapping.js').css({
+                'position': 'relative',
+                'visibility': 'visible'
+            });
+            $(codeHTML).css('top', 'calc(-100% - 59px)');
+            $(codeCSS).css('top', 'calc(-200% - 59px)');
+            $(codeJS).css('top', '-200%');
+        }
+    });
+    
+    // expanding scrollbars
+    var vScroll = $('.CodeMirror-overlayscroll-vertical');
+    var hScroll = $('.CodeMirror-overlayscroll-horizontal');
+    
+    $(vScroll).on('mousedown', function () {
+        $(this).addClass('hold');
+    });
+    
+    $(hScroll).on('mousedown', function () {
+        $(this).addClass('hold');
+    });
+    
+    $(document).on('mouseup', function () {
+        $(vScroll).removeClass('hold');
+        $(hScroll).removeClass('hold');
+    });
+    
     // indent wrapped lines
     function indentWrappedLines(editor) {
         var charWidth = editor.defaultCharWidth(),
@@ -274,22 +308,6 @@ $(document).ready(function () {
     indentWrappedLines(editorHTML);
     indentWrappedLines(editorCSS);
     indentWrappedLines(editorJS);
-    
-    // expanding scrollbars
-    var vScroll = $('.CodeMirror-overlayscroll-vertical');
-    var hScroll = $('.CodeMirror-overlayscroll-horizontal');
-    
-    $(vScroll).on('mousedown', function () {
-        $(this).addClass('hold');
-    });
-    
-    $(hScroll).on('mousedown', function () {
-        $(this).addClass('hold');
-    });
-    
-    $(document).on('mouseup', function () {
-        $(vScroll).add(hScroll).removeClass('hold');
-    });
     // ------------------------------
     // GENERAL FUNCTIONS
     
@@ -298,32 +316,49 @@ $(document).ready(function () {
     // ------------------------------
     // toggle line wrapping (html)
     $('.toggle-lineWrapping.html').on('click', function () {
-        $(this).toggleClass('lw-on');
-        if ($(this).hasClass('lw-on')) {
+        $(this).toggleClass('active');
+        if ($(this).hasClass('active')) {
             editorHTML.setOption('lineWrapping', true);
+            $(this).html('WRAP &vdash;');
         } else {
             editorHTML.setOption('lineWrapping', false);
+            $(this).html('WRAP &dashv;');
         }
     });
     
     // toggle line wrapping (css)
     $('.toggle-lineWrapping.css').on('click', function () {
-        $(this).toggleClass('lw-on');
-        if ($(this).hasClass('lw-on')) {
+        $(this).toggleClass('active');
+        if ($(this).hasClass('active')) {
             editorCSS.setOption('lineWrapping', true);
+            $(this).html('WRAP &vdash;');
         } else {
             editorCSS.setOption('lineWrapping', false);
+            $(this).html('WRAP &dashv;');
         }
     });
     
     // toggle line wrapping (js)
     $('.toggle-lineWrapping.js').on('click', function () {
-        $(this).toggleClass('lw-on');
-        if ($(this).hasClass('lw-on')) {
+        $(this).toggleClass('active');
+        if ($(this).hasClass('active')) {
             editorJS.setOption('lineWrapping', true);
+            $(this).html('WRAP &vdash;');
         } else {
             editorJS.setOption('lineWrapping', false);
+            $(this).html('WRAP &dashv;');
         }
+    });
+    
+    // get jquery
+    $('.get-jq').on('click', function () {
+        loadJQ('http://code.jquery.com/jquery-latest.min.js');
+    });
+    
+    // get css reset
+    $('.get-reset').on('click', function () {
+        $(this).toggleClass('active');
+        loadCSS();
     });
     
     // run script
@@ -331,11 +366,6 @@ $(document).ready(function () {
         loadJS();
         loadCSS();
         loadHTML();
-    });
-    
-    // get jquery
-    $('.get-jq').on('click', function () {
-        loadJQ('http://code.jquery.com/jquery-latest.min.js');
     });
     // ------------------------------
     // UTILITY FUNCTIONS
