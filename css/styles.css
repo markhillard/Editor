@@ -59,40 +59,6 @@ overflow:hidden;
 
 
 
-/* Visibility Helpers (Use Sparingly)
-================================================== */
-
-@media only screen and (min-width:801px) {
-    .visible-mobile,.visible-tablet,.hidden-desktop { display:none !important; }
-}
-
-@media only screen and (min-width:480px) and (max-width:800px) {
-    .visible-mobile,.hidden-tablet,.visible-desktop { display:none !important; }
-}
-
-@media only screen and (max-width:479px) {
-    .hidden-mobile,.visible-tablet,.visible-desktop { display:none !important; }
-}
-
-
-
-/* Fonts & Icons
-================================================== */
-
-@font-face {
-    font-family:"Hack";
-    src:url("../fonts/hack-regular-webfont.eot");
-    src:url("../fonts/hack-regular-webfont.eot#iefix") format("embedded-opentype"),
-        url("../fonts/hack-regular-webfont.woff") format("woff"),
-        url("../fonts/hack-regular-webfont.woff2") format("woff2"),
-        url("../fonts/hack-regular-webfont.ttf") format("truetype"),
-        url("../fonts/hack-regular-webfont.svg#entypo") format("svg");
-    font-weight:normal;
-    font-style:normal;
-}
-
-
-
 /* CodeMirror Overrides
 ================================================== */
 
@@ -247,6 +213,23 @@ position:relative;
 .get-jq:active {
 background-color:#6d8a88;
 color:#333540;
+}
+
+
+
+/* Visibility Helpers (Use Sparingly)
+================================================== */
+
+@media only screen and (min-width:801px) {
+    .visible-mobile,.visible-tablet,.hidden-desktop { display:none !important; }
+}
+
+@media only screen and (min-width:480px) and (max-width:800px) {
+    .visible-mobile,.hidden-tablet,.visible-desktop { display:none !important; }
+}
+
+@media only screen and (max-width:479px) {
+    .hidden-mobile,.visible-tablet,.visible-desktop { display:none !important; }
 }
 
 
