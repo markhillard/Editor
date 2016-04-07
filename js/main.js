@@ -85,10 +85,10 @@ $(document).ready(function () {
         
         if ($('.get-reset').hasClass('active')) {
             head.html(reset + '<style>' + css + '</style>');
-            $('.get-reset').html('RESET &minus;');
+            $('.get-reset').html('reset &minus;');
         } else {
             head.html('<style>' + css + '</style>');
-            $('.get-reset').html('RESET &plus;');
+            $('.get-reset').html('reset &plus;');
         }
     }
     
@@ -320,10 +320,10 @@ $(document).ready(function () {
         $(this).toggleClass('active');
         if ($(this).hasClass('active')) {
             editorHTML.setOption('lineWrapping', true);
-            $(this).html('WRAP &vdash;');
+            $(this).html('wrap &vdash;');
         } else {
             editorHTML.setOption('lineWrapping', false);
-            $(this).html('WRAP &dashv;');
+            $(this).html('wrap &dashv;');
         }
     });
     
@@ -332,10 +332,10 @@ $(document).ready(function () {
         $(this).toggleClass('active');
         if ($(this).hasClass('active')) {
             editorCSS.setOption('lineWrapping', true);
-            $(this).html('WRAP &vdash;');
+            $(this).html('wrap &vdash;');
         } else {
             editorCSS.setOption('lineWrapping', false);
-            $(this).html('WRAP &dashv;');
+            $(this).html('wrap &dashv;');
         }
     });
     
@@ -344,10 +344,10 @@ $(document).ready(function () {
         $(this).toggleClass('active');
         if ($(this).hasClass('active')) {
             editorJS.setOption('lineWrapping', true);
-            $(this).html('WRAP &vdash;');
+            $(this).html('wrap &vdash;');
         } else {
             editorJS.setOption('lineWrapping', false);
-            $(this).html('WRAP &dashv;');
+            $(this).html('wrap &dashv;');
         }
     });
     
