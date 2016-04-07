@@ -228,51 +228,52 @@ $(document).ready(function () {
     
     // GENERAL FUNCTIONS
     // ------------------------------
-    // toggle line wrapping
-    var lineWrap = $('.toggle-lineWrapping');
+    // code pane and wrap button swapping
+    function swapOn(elem) {
+        $(elem).css({
+            'position': 'relative',
+            'visibility': 'visible'
+        });
+    }
     
-    function wrapOff() {
-        $(lineWrap).css({
+    function swapOff(elem) {
+        $(elem).css({
             'position': 'absolute',
             'visibility': 'hidden'
         });
     }
     
-    // code pane swapping
-    var codeHTML = $('.code-pane-html');
-    var codeCSS = $('.code-pane-css');
-    var codeJS = $('.code-pane-js');
-    
     $('.code-swap span').on('click', function () {
+        var codeHTML = $('.code-pane-html');
+        var codeCSS = $('.code-pane-css');
+        var codeJS = $('.code-pane-js');
+        var wrapHTML = $('.toggle-lineWrapping.html');
+        var wrapCSS = $('.toggle-lineWrapping.css');
+        var wrapJS = $('.toggle-lineWrapping.js');
+        
         $(this).addClass('active').siblings().removeClass('active');
         
         if ($(this).is(':contains("HTML")')) {
-            wrapOff();
-            $('.toggle-lineWrapping.html').css({
-                'position': 'relative',
-                'visibility': 'visible'
-            });
-            $(codeHTML).css('top', 'auto');
-            $(codeCSS).css('top', 'auto');
-            $(codeJS).css('top', 'auto');
+            swapOn(codeHTML);
+            swapOn(wrapHTML);
+            swapOff(codeCSS);
+            swapOff(wrapCSS);
+            swapOff(codeJS);
+            swapOff(wrapJS);
         } else if ($(this).is(':contains("CSS")')) {
-            wrapOff();
-            $('.toggle-lineWrapping.css').css({
-                'position': 'relative',
-                'visibility': 'visible'
-            });
-            $(codeHTML).css('top', 'calc(-100% - 59px)');
-            $(codeCSS).css('top', '-100%');
-            $(codeJS).css('top', '-100%');
+            swapOff(codeHTML);
+            swapOff(wrapHTML);
+            swapOn(codeCSS);
+            swapOn(wrapCSS);
+            swapOff(codeJS);
+            swapOff(wrapJS);
         } else if ($(this).is(':contains("JS")')) {
-            wrapOff();
-            $('.toggle-lineWrapping.js').css({
-                'position': 'relative',
-                'visibility': 'visible'
-            });
-            $(codeHTML).css('top', 'calc(-100% - 59px)');
-            $(codeCSS).css('top', 'calc(-200% - 59px)');
-            $(codeJS).css('top', '-200%');
+            swapOff(codeHTML);
+            swapOff(wrapHTML);
+            swapOff(codeCSS);
+            swapOff(wrapCSS);
+            swapOn(codeJS);
+            swapOn(wrapJS);
         }
     });
     
