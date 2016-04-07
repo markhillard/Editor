@@ -85,10 +85,10 @@ $(document).ready(function () {
         
         if ($('.get-reset').hasClass('active')) {
             head.html(reset + '<style>' + css + '</style>');
-            $('.get-reset').html('reset &minus;');
+            $('.get-reset').html('css reset &minus;');
         } else {
             head.html('<style>' + css + '</style>');
-            $('.get-reset').html('reset &plus;');
+            $('.get-reset').html('css reset &plus;');
         }
     }
     
