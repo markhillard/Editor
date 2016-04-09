@@ -18,6 +18,7 @@ E(document).ready(function () {
     // html code
     var editorHTML = document.editor = CodeMirror.fromTextArea(htmlcode, {
         mode: 'text/html',
+        keyMap: 'sublime',
         lineNumbers: true,
         lineWrapping: false,
         theme: 'dracula',
@@ -31,6 +32,7 @@ E(document).ready(function () {
     // css code
     var editorCSS = document.editor = CodeMirror.fromTextArea(csscode, {
         mode: 'css',
+        keyMap: 'sublime',
         lineNumbers: true,
         lineWrapping: false,
         theme: 'dracula',
@@ -44,6 +46,7 @@ E(document).ready(function () {
     // js code
     var editorJS = document.editor = CodeMirror.fromTextArea(jscode, {
         mode: 'javascript',
+        keyMap: 'sublime',
         lineNumbers: true,
         lineWrapping: false,
         theme: 'dracula',
