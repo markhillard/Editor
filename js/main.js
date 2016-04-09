@@ -15,9 +15,9 @@ E(document).ready(function () {
     
     // INITIALIZE CODEMIRROR
     // ------------------------------
-    // js code
-    var editorJS = document.editor = CodeMirror.fromTextArea(jscode, {
-        mode: 'javascript',
+    // html code
+    var editorHTML = document.editor = CodeMirror.fromTextArea(htmlcode, {
+        mode: 'text/html',
         lineNumbers: true,
         lineWrapping: false,
         theme: 'dracula',
@@ -41,9 +41,9 @@ E(document).ready(function () {
         styleActiveLine: true
     });
     
-    // html code
-    var editorHTML = document.editor = CodeMirror.fromTextArea(htmlcode, {
-        mode: 'text/html',
+    // js code
+    var editorJS = document.editor = CodeMirror.fromTextArea(jscode, {
+        mode: 'javascript',
         lineNumbers: true,
         lineWrapping: false,
         theme: 'dracula',
@@ -60,40 +60,6 @@ E(document).ready(function () {
     // CODE LOADING
     // ------------------------------
     var html;
-    
-    // load js
-    function loadJS() {
-        var iframe = document.getElementById('preview');
-        var js = editorJS.getValue();
-        var preview;
-        
-        if (iframe.contentDocument) {
-            preview = iframe.contentDocument;
-        } else if (iframe.contentWindow) {
-            preview = iframe.contentWindow.document;
-        } else {
-            preview = iframe.document;
-        }
-        
-        preview.open();
-        preview.write(html + '<script>' + js + '<\/script>');
-        preview.close();
-    }
-    
-    // load css
-    function loadCSS() {
-        var head = E('#preview').contents().find('head');
-        var css = editorCSS.getValue();
-        var reset = '<link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">';
-        
-        if (E('.get-reset').hasClass('active')) {
-            head.html(reset + '<style>' + css + '</style>');
-            E('.get-reset').html('css reset &minus;');
-        } else {
-            head.html('<style>' + css + '</style>');
-            E('.get-reset').html('css reset &plus;');
-        }
-    }
     
     // load html
     function loadHTML() {
@@ -122,6 +88,41 @@ E(document).ready(function () {
         loadCSS();
     }
     
+    // load css
+    function loadCSS() {
+        var head = E('#preview').contents().find('head');
+        var css = editorCSS.getValue();
+        var reset = '<link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">';
+        
+        if (E('.get-reset').hasClass('active')) {
+            head.html(reset + '<style>' + css + '</style>');
+            E('.get-reset').html('css reset &minus;');
+        } else {
+            head.html('<style>' + css + '</style>');
+            E('.get-reset').html('css reset &plus;');
+        }
+    }
+    
+    // load js
+    function loadJS() {
+        var iframe = document.getElementById('preview');
+        var js = editorJS.getValue();
+        var preview;
+        
+        if (iframe.contentDocument) {
+            preview = iframe.contentDocument;
+        } else if (iframe.contentWindow) {
+            preview = iframe.contentWindow.document;
+        } else {
+            preview = iframe.document;
+        }
+        
+        preview.open();
+        preview.write(html + '<script>' + js + '<\/script>');
+        preview.close();
+    }
+    
+    // run start html
     startHTML();
     // ------------------------------
     // CODE LOADING
@@ -154,9 +155,12 @@ E(document).ready(function () {
     
     // EDITOR UPDATES
     // ------------------------------
-    // editor update (js)
-    editorJS.on('change', function () {
-        localStorage.setItem('jscode', editorJS.getValue());
+    // editor update (html)
+    var delayHTML;
+    editorHTML.on('change', function () {
+        clearTimeout(delayHTML);
+        delayHTML = setTimeout(loadHTML, 300);
+        localStorage.setItem('htmlcode', editorHTML.getValue());
     });
     
     // editor update (css)
@@ -165,12 +169,9 @@ E(document).ready(function () {
         localStorage.setItem('csscode', editorCSS.getValue());
     });
     
-    // editor update (html)
-    var delayHTML;
-    editorHTML.on('change', function () {
-        clearTimeout(delayHTML);
-        delayHTML = setTimeout(loadHTML, 300);
-        localStorage.setItem('htmlcode', editorHTML.getValue());
+    // editor update (js)
+    editorJS.on('change', function () {
+        localStorage.setItem('jscode', editorJS.getValue());
     });
     
     // run editor update (html)
