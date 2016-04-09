@@ -62,6 +62,9 @@
 <script src="./js/jquery-ui.min.js"></script>
 <script src="./js/prefixfree.min.js"></script>
 
+<!--twitter typeahead-->
+<script src="./js/typeahead.bundle.min.js"></script>
+
 <!--codemirror main-->
 <script src="./codemirror/lib/codemirror.js"></script>
 
@@ -89,12 +92,14 @@
             <span class="code-swap-js" href="#">JS</span>
         </div>
         <div class="code-tools">
-            <span class="toggle-lineWrapping html">wrap &dashv;</span>
-            <span class="toggle-lineWrapping css">wrap &dashv;</span>
-            <span class="toggle-lineWrapping js">wrap &dashv;</span>
+            <span class="toggle-lineWrapping html">wrap &#10558;</span>
+            <span class="toggle-lineWrapping css">wrap &#10558;</span>
+            <span class="toggle-lineWrapping js">wrap &#10558;</span>
             <span class="get-reset">css reset &plus;</span>
-            <span class="get-jq">jquery &Darr;</span>
             <span class="run-script">run js &raquo;</span>
+        </div>
+        <div class="cdnjs-search">
+            <input class="query" type="text" placeholder="cdnjs...">
         </div>
     </section>
     <section id="editor">

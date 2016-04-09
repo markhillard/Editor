@@ -8,7 +8,6 @@
 */
 
 
-
 /* CSS Reset
 ================================================== */
 
@@ -132,9 +131,7 @@ flex-direction:row;
 }
 
 #utils > div {
-display:inline-block;
 font-size:0;
-vertical-align:top;
 }
 
 .logo {
@@ -147,28 +144,9 @@ height:auto;
 width:100%;
 }
 
-.toggle-lineWrapping.css,
-.toggle-lineWrapping.js {
-position:absolute;
-visibility:hidden;
-}
-
-
-
-/* Editor
-================================================== */
-
-#editor {
-display:flex;
-flex-direction:row;
-height:calc(100vh - 59px);
-}
-
-.code-swap {}
-
 .code-tools {
 position:absolute;
-right:0;
+right:260px;
 }
 
 .code-swap span,
@@ -189,6 +167,85 @@ background-color:#6d8a88;
 color:#333540;
 }
 
+.toggle-lineWrapping.css,
+.toggle-lineWrapping.js {
+position:absolute;
+visibility:hidden;
+}
+
+.run-script:active {
+background-color:#6d8a88;
+color:#333540;
+}
+
+
+
+/* cdnjs Search
+================================================== */
+
+.cdnjs-search {
+position:absolute;
+right:0;
+}
+
+.cdnjs-search .query {
+appearance:none;
+background:none;
+background-color:#6d8a88;
+border:none;
+box-shadow:0 1px 0 #0e0f13;
+color:#282a36;
+display:block;
+font-family:"Source Code Pro", monospace;
+font-size:1rem;
+font-weight:700;
+padding:11px 15px;
+width:260px;
+}
+
+.tt-hint {
+color:rgba(0,0,0,.4)!important;
+}
+
+.tt-menu {
+margin-top:1px;
+text-align:left;
+width:100%;
+}
+
+.tt-menu .no-match {
+background-color:#6d8a88;
+color:#282a36;
+font-size:1rem;
+padding:.75rem;
+}
+
+.tt-suggestion {
+background-color:#6d8a88;
+color:#282a36;
+cursor:pointer;
+font-size:1rem;
+font-weight:700;
+padding:.75rem;
+}
+
+.tt-cursor,
+.tt-suggestion:hover {
+background-color:#0e0f13;
+color:#6d8a88;
+}
+
+
+
+/* Editor
+================================================== */
+
+#editor {
+display:flex;
+flex-direction:row;
+height:calc(100vh - 59px);
+}
+
 #preview {
 height:100%;
 margin-left:16px;
@@ -207,12 +264,6 @@ width:calc(50% + 16px);
 [class^="code-pane-"] {
 height:calc(100vh - 59px);
 position:relative;
-}
-
-.run-script:active,
-.get-jq:active {
-background-color:#6d8a88;
-color:#333540;
 }
 
 

@@ -8,7 +8,10 @@
 */
 
 
-$(document).ready(function () {
+// make jquery play nice
+var E = $.noConflict(true);
+
+E(document).ready(function () {
     
     // INITIALIZE CODEMIRROR
     // ------------------------------
@@ -79,22 +82,22 @@ $(document).ready(function () {
     
     // load css
     function loadCSS() {
-        var head = $('#preview').contents().find('head');
+        var head = E('#preview').contents().find('head');
         var css = editorCSS.getValue();
         var reset = '<link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">';
         
-        if ($('.get-reset').hasClass('active')) {
+        if (E('.get-reset').hasClass('active')) {
             head.html(reset + '<style>' + css + '</style>');
-            $('.get-reset').html('css reset &minus;');
+            E('.get-reset').html('css reset &minus;');
         } else {
             head.html('<style>' + css + '</style>');
-            $('.get-reset').html('css reset &plus;');
+            E('.get-reset').html('css reset &plus;');
         }
     }
     
     // load html
     function loadHTML() {
-        var body = $('#preview').contents().find('body');
+        var body = E('#preview').contents().find('body');
         html = editorHTML.getValue();
         body.html(html);
         loadCSS();
@@ -130,10 +133,12 @@ $(document).ready(function () {
         var defaultHTML = '<main>\n    <div>\n        <h1>Editor<\/h1>\n        <p>It\'s an editor.<\/p>\n    <\/div>\n<\/main>';
         localStorage.setItem('htmlcode', defaultHTML);
     }
+    
     if (localStorage.getItem('csscode') === null) {
         var defaultCSS = '@import url(\"https:\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700\");\n\nbody {\n    background-color:#282a36;\n    color:#fff;\n    font-family:\"Droid Sans\";\n    overflow:hidden;\n    text-align:center;\n}\n\nmain {\n    left:50%;\n    position:absolute;\n    top:50%;\n    transform:translate(-50%,-50%);\n}\n\nh1 {\n    font-size:10rem;\n    font-weight:400;\n    margin:0;\n}\n\np {\n    font-size:1rem;\n    margin:1rem 0;\n}';
         localStorage.setItem('csscode', defaultCSS);
     }
+    
     if (localStorage.getItem('jscode') === null) {
         var defaultJS = 'alert(\'Pow! Right in the kisser.\');';
         localStorage.setItem('jscode', defaultJS);
@@ -176,22 +181,62 @@ $(document).ready(function () {
     
     // DEPENDENCY INJECTION
     // ------------------------------
-    // load jquery
-    function loadJQ(url) {
-        var jqDep;
+    // cdnjs typeahead search
+    var typeahead = E('.cdnjs-search .query');
+    
+    E.get('https://api.cdnjs.com/libraries').done(function (data) {
+        var searchData = data.results;
+        var search = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: searchData
+        });
+        
+        E(typeahead).typeahead(null, {
+            display: 'name',
+            name: 'search',
+            source: search,
+            templates: {
+                empty: function () {
+                    return '<div class="no-match">unable to match query</div>';
+                },
+                suggestion: function (data) {
+                    return '<p>' + data.name + '</p>';
+                }
+            }
+        }).bind('typeahead:select', function (e, datum) {
+            var latest = datum.latest;
+            loadDep(latest);
+            clearSearch();
+        }).bind('typeahead:change', function (e, datum) {
+            clearSearch();
+        });
+    }).fail(function () {
+        console.log("error getting json data");
+    });
+    
+    // clear typeahead search and close results list
+    function clearSearch() {
+        E(typeahead).typeahead('val', '');
+        E(typeahead).typeahead('close');
+    }
+    
+    // load dependency
+    function loadDep(url) {
+        var dep;
         
         // if jquery script tags are included
         if (url.indexOf('<') !== -1) {
-            jqDep = url;
+            dep = url;
         } else {
-            jqDep = '<script src="' + url + '"><\/script>';
+            dep = '<script src="' + url + '"><\/script>';
         }
         
         // if jquery is already included
-        if (html.indexOf(jqDep) !== -1) {
-            alert('jquery already included');
+        if (html.indexOf(dep) !== -1) {
+            alert('dependency already included');
         } else {
-            html = jqDep + '\n\n' + html;
+            html = dep + '\n' + html;
             editorHTML.setValue(html);
         }
     }
@@ -202,11 +247,11 @@ $(document).ready(function () {
     // RESIZE FUNCTIONS
     // ------------------------------
     // window dimensions
-    var windowWidth = $(window).width();
+    var windowWidth = E(window).width();
     
     // drag handle to resize code pane
-    var resizeHandle = $('.code-pane');
-    $(resizeHandle).resizable({
+    var resizeHandle = E('.code-pane');
+    E(resizeHandle).resizable({
         handles: 'e',
         minWidth: 0,
         maxWidth: windowWidth - 16,
@@ -230,44 +275,44 @@ $(document).ready(function () {
     // ------------------------------
     // code pane and wrap button swapping
     function swapOn(elem) {
-        $(elem).css({
+        E(elem).css({
             'position': 'relative',
             'visibility': 'visible'
         });
     }
     
     function swapOff(elem) {
-        $(elem).css({
+        E(elem).css({
             'position': 'absolute',
             'visibility': 'hidden'
         });
     }
     
-    $('.code-swap span').on('click', function () {
-        var codeHTML = $('.code-pane-html');
-        var codeCSS = $('.code-pane-css');
-        var codeJS = $('.code-pane-js');
-        var wrapHTML = $('.toggle-lineWrapping.html');
-        var wrapCSS = $('.toggle-lineWrapping.css');
-        var wrapJS = $('.toggle-lineWrapping.js');
+    E('.code-swap span').on('click', function () {
+        var codeHTML = E('.code-pane-html');
+        var codeCSS = E('.code-pane-css');
+        var codeJS = E('.code-pane-js');
+        var wrapHTML = E('.toggle-lineWrapping.html');
+        var wrapCSS = E('.toggle-lineWrapping.css');
+        var wrapJS = E('.toggle-lineWrapping.js');
         
-        $(this).addClass('active').siblings().removeClass('active');
+        E(this).addClass('active').siblings().removeClass('active');
         
-        if ($(this).is(':contains("HTML")')) {
+        if (E(this).is(':contains("HTML")')) {
             swapOn(codeHTML);
             swapOn(wrapHTML);
             swapOff(codeCSS);
             swapOff(wrapCSS);
             swapOff(codeJS);
             swapOff(wrapJS);
-        } else if ($(this).is(':contains("CSS")')) {
+        } else if (E(this).is(':contains("CSS")')) {
             swapOff(codeHTML);
             swapOff(wrapHTML);
             swapOn(codeCSS);
             swapOn(wrapCSS);
             swapOff(codeJS);
             swapOff(wrapJS);
-        } else if ($(this).is(':contains("JS")')) {
+        } else if (E(this).is(':contains("JS")')) {
             swapOff(codeHTML);
             swapOff(wrapHTML);
             swapOff(codeCSS);
@@ -278,20 +323,20 @@ $(document).ready(function () {
     });
     
     // expanding scrollbars
-    var vScroll = $('.CodeMirror-overlayscroll-vertical');
-    var hScroll = $('.CodeMirror-overlayscroll-horizontal');
+    var vScroll = E('.CodeMirror-overlayscroll-vertical');
+    var hScroll = E('.CodeMirror-overlayscroll-horizontal');
     
-    $(vScroll).on('mousedown', function () {
-        $(this).addClass('hold');
+    E(vScroll).on('mousedown', function () {
+        E(this).addClass('hold');
     });
     
-    $(hScroll).on('mousedown', function () {
-        $(this).addClass('hold');
+    E(hScroll).on('mousedown', function () {
+        E(this).addClass('hold');
     });
     
-    $(document).on('mouseup', function () {
-        $(vScroll).removeClass('hold');
-        $(hScroll).removeClass('hold');
+    E(document).on('mouseup', function () {
+        E(vScroll).removeClass('hold');
+        E(hScroll).removeClass('hold');
     });
     
     // indent wrapped lines
@@ -316,54 +361,49 @@ $(document).ready(function () {
     // UTILITY FUNCTIONS
     // ------------------------------
     // toggle line wrapping (html)
-    $('.toggle-lineWrapping.html').on('click', function () {
-        $(this).toggleClass('active');
-        if ($(this).hasClass('active')) {
+    E('.toggle-lineWrapping.html').on('click', function () {
+        E(this).toggleClass('active');
+        if (E(this).hasClass('active')) {
             editorHTML.setOption('lineWrapping', true);
-            $(this).html('wrap &vdash;');
+            E(this).html('wrap &#10559;');
         } else {
             editorHTML.setOption('lineWrapping', false);
-            $(this).html('wrap &dashv;');
+            E(this).html('wrap &#10558;');
         }
     });
     
     // toggle line wrapping (css)
-    $('.toggle-lineWrapping.css').on('click', function () {
-        $(this).toggleClass('active');
-        if ($(this).hasClass('active')) {
+    E('.toggle-lineWrapping.css').on('click', function () {
+        E(this).toggleClass('active');
+        if (E(this).hasClass('active')) {
             editorCSS.setOption('lineWrapping', true);
-            $(this).html('wrap &vdash;');
+            E(this).html('wrap &#10559;');
         } else {
             editorCSS.setOption('lineWrapping', false);
-            $(this).html('wrap &dashv;');
+            E(this).html('wrap &#10558;');
         }
     });
     
     // toggle line wrapping (js)
-    $('.toggle-lineWrapping.js').on('click', function () {
-        $(this).toggleClass('active');
-        if ($(this).hasClass('active')) {
+    E('.toggle-lineWrapping.js').on('click', function () {
+        E(this).toggleClass('active');
+        if (E(this).hasClass('active')) {
             editorJS.setOption('lineWrapping', true);
-            $(this).html('wrap &vdash;');
+            E(this).html('wrap &#10559;');
         } else {
             editorJS.setOption('lineWrapping', false);
-            $(this).html('wrap &dashv;');
+            E(this).html('wrap &#10558;');
         }
     });
     
-    // get jquery
-    $('.get-jq').on('click', function () {
-        loadJQ('http://code.jquery.com/jquery-latest.min.js');
-    });
-    
     // get css reset
-    $('.get-reset').on('click', function () {
-        $(this).toggleClass('active');
+    E('.get-reset').on('click', function () {
+        E(this).toggleClass('active');
         loadCSS();
     });
     
     // run script
-    $('.run-script').on('click', function () {
+    E('.run-script').on('click', function () {
         loadJS();
         loadCSS();
         loadHTML();
