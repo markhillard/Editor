@@ -18,3 +18,4 @@ Editor is an HTML / CSS / JS code editor that renders what you type in real-time
 - Dependency Injection
 - Run Scripts In Browser
 - [Sublime Keymap](https://codemirror.net/demo/sublime.html)
+- [Emmet](https://github.com/emmetio/codemirror)

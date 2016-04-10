@@ -34,6 +34,7 @@ E(document).ready(function () {
     // html code
     var editorHTML = document.editor = CodeMirror.fromTextArea(htmlcode, {
         mode: 'text/html',
+        profile: 'html',
         keyMap: 'sublime',
         lineNumbers: true,
         lineWrapping: false,
@@ -44,6 +45,9 @@ E(document).ready(function () {
         scrollbarStyle: 'overlay',
         styleActiveLine: true
     });
+    
+    // emmet support for html
+    emmetCodeMirror(editorHTML);
     
     // css code
     var editorCSS = document.editor = CodeMirror.fromTextArea(csscode, {
