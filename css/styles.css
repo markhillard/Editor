@@ -252,12 +252,25 @@ margin-left:16px;
 width:calc(100% - 16px);
 }
 
+.preview-width {
+background-color:#0e0f13;
+bottom:0;
+color:#fff;
+display:none;
+font-size:0.8rem;
+left:16px;
+margin:0 auto;
+padding:5px 10px 5px 5px;
+position:absolute;
+}
+
 .code-pane {
 width:calc(50% - 16px);
 }
 
 .preview-pane {
 height:calc(100vh - 59px);
+position:relative;
 width:calc(50% + 16px);
 }
 

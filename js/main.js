@@ -1,4 +1,4 @@
-/*
+/*!
 ███████ ██████  ██ ████████  ██████  ██████
 ██      ██   ██ ██    ██    ██    ██ ██   ██
 █████   ██   ██ ██    ██    ██    ██ ██████
@@ -8,9 +8,25 @@
 */
 
 
-// make jquery play nice
+/*! Table Of Contents:
+// ------------------------------
+// INITIALIZE CODEMIRROR
+// CODE LOADING
+// LOCAL STORAGE
+// EDITOR UPDATES
+// DEPENDENCY INJECTION
+// RESIZE FUNCTIONS
+// GENERAL FUNCTIONS
+// UTILITY FUNCTIONS
+// REFRESH EDITOR
+// ------------------------------
+*/
+
+
+// make jQuery play nice
 var E = $.noConflict(true);
 
+// ready the DOM
 E(document).ready(function () {
     
     // INITIALIZE CODEMIRROR
@@ -56,8 +72,6 @@ E(document).ready(function () {
         scrollbarStyle: 'overlay',
         styleActiveLine: true
     });
-    // ------------------------------
-    // INITIALIZE CODEMIRROR
     
     
     // CODE LOADING
@@ -127,8 +141,6 @@ E(document).ready(function () {
     
     // run start html
     startHTML();
-    // ------------------------------
-    // CODE LOADING
     
     
     // LOCAL STORAGE
@@ -152,8 +164,6 @@ E(document).ready(function () {
     editorHTML.setValue(localStorage.getItem('htmlcode'));
     editorCSS.setValue(localStorage.getItem('csscode'));
     editorJS.setValue(localStorage.getItem('jscode'));
-    // ------------------------------
-    // LOCAL STORAGE
     
     
     // EDITOR UPDATES
@@ -179,8 +189,6 @@ E(document).ready(function () {
     
     // run editor update (html)
     loadHTML();
-    // ------------------------------
-    // EDITOR UPDATES
     
     
     // DEPENDENCY INJECTION
@@ -212,11 +220,12 @@ E(document).ready(function () {
             var latest = datum.latest;
             loadDep(latest);
             clearSearch();
-        }).bind('typeahead:change', function (e, datum) {
+        }).bind('typeahead:change', function () {
             clearSearch();
         });
     }).fail(function () {
-        console.log("error getting json data");
+        console.log("error getting cdnjs libraries");
+        alert("error getting cdnjs libraries");
     });
     
     // clear typeahead search and close results list
@@ -229,50 +238,60 @@ E(document).ready(function () {
     function loadDep(url) {
         var dep;
         
-        // if jquery script tags are included
+        // if dependency script tags are included
         if (url.indexOf('<') !== -1) {
             dep = url;
         } else {
             dep = '<script src="' + url + '"><\/script>';
         }
         
-        // if jquery is already included
+        // if dependency is already included
         if (html.indexOf(dep) !== -1) {
             alert('dependency already included');
         } else {
             html = dep + '\n' + html;
             editorHTML.setValue(html);
+            alert('dependency added successfully');
         }
     }
-    // ------------------------------
-    // DEPENDENCY INJECTION
     
     
     // RESIZE FUNCTIONS
     // ------------------------------
-    // window dimensions
-    var windowWidth = E(window).width();
-    
     // drag handle to resize code pane
     var resizeHandle = E('.code-pane');
+    var widthBox = E('.preview-width');
+    var windowWidth = E(window).width();
+    
     E(resizeHandle).resizable({
         handles: 'e',
         minWidth: 0,
         maxWidth: windowWidth - 16,
+        create: function () {
+            var currentWidth = resizeHandle.width();
+            var previewWidth = windowWidth - currentWidth - 16;
+            widthBox.text(previewWidth + 'px');
+        },
         resize: function (e, ui) {
             var currentWidth = ui.size.width;
+            var previewWidth = windowWidth - currentWidth - 16;
             ui.element.next().css('width', windowWidth - currentWidth + 'px');
             ui.element.next().find('iframe').css('pointer-events', 'none');
+            widthBox.show();
+            if (currentWidth <= 0) {
+                widthBox.text(windowWidth - 16 + 'px');
+            } else {
+                widthBox.text(previewWidth + 'px');
+            }
         },
         stop: function (e, ui) {
             ui.element.next().find('iframe').css('pointer-events', 'inherit');
+            widthBox.hide();
             editorHTML.refresh();
             editorCSS.refresh();
             editorJS.refresh();
         }
     });
-    // ------------------------------
-    // RESIZE FUNCTIONS
     
     
     // GENERAL FUNCTIONS
@@ -358,8 +377,6 @@ E(document).ready(function () {
     indentWrappedLines(editorHTML);
     indentWrappedLines(editorCSS);
     indentWrappedLines(editorJS);
-    // ------------------------------
-    // GENERAL FUNCTIONS
     
     
     // UTILITY FUNCTIONS
@@ -412,11 +429,10 @@ E(document).ready(function () {
         loadCSS();
         loadHTML();
     });
+    
+    
+    // REFRESH EDITOR
     // ------------------------------
-    // UTILITY FUNCTIONS
-    
-    
-    // refresh editor
     editorHTML.refresh();
     editorCSS.refresh();
     editorJS.refresh();
