@@ -52,6 +52,7 @@ E(document).ready(function () {
     // css code
     var editorCSS = document.editor = CodeMirror.fromTextArea(csscode, {
         mode: 'css',
+        profile: 'css',
         keyMap: 'sublime',
         lineNumbers: true,
         lineWrapping: false,
@@ -62,6 +63,9 @@ E(document).ready(function () {
         scrollbarStyle: 'overlay',
         styleActiveLine: true
     });
+    
+    // emmet support for css
+    emmetCodeMirror(editorCSS);
     
     // js code
     var editorJS = document.editor = CodeMirror.fromTextArea(jscode, {
@@ -115,12 +119,12 @@ E(document).ready(function () {
         var css = editorCSS.getValue();
         var reset = '<link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">';
         
-        if (E('.get-reset').hasClass('active')) {
+        if (E('.toggle-reset').hasClass('active')) {
             head.html(reset + '<style>' + css + '</style>');
-            E('.get-reset').html('css reset &minus;');
+            E('.toggle-reset').html('css reset &minus;');
         } else {
             head.html('<style>' + css + '</style>');
-            E('.get-reset').html('css reset &plus;');
+            E('.toggle-reset').html('css reset &plus;');
         }
     }
     
@@ -421,8 +425,8 @@ E(document).ready(function () {
         }
     });
     
-    // get css reset
-    E('.get-reset').on('click', function () {
+    // toggle css reset
+    E('.toggle-reset').on('click', function () {
         E(this).toggleClass('active');
         loadCSS();
     });
