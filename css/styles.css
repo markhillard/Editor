@@ -173,6 +173,7 @@ position:absolute;
 visibility:hidden;
 }
 
+.reset-editor:active,
 .run-script:active {
 background-color:#6d8a88;
 color:#333540;

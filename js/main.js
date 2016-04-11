@@ -116,16 +116,9 @@ E(document).ready(function () {
     // load css
     function loadCSS() {
         var head = E('#preview').contents().find('head');
-        var css = editorCSS.getValue();
         var reset = '<link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">';
-        
-        if (E('.toggle-reset').hasClass('active')) {
-            head.html(reset + '<style>' + css + '</style>');
-            E('.toggle-reset').html('css reset &minus;');
-        } else {
-            head.html('<style>' + css + '</style>');
-            E('.toggle-reset').html('css reset &plus;');
-        }
+        var css = editorCSS.getValue();
+        head.html(reset + '<style>' + css + '</style>');
     }
     
     // load js
@@ -232,7 +225,6 @@ E(document).ready(function () {
             clearSearch();
         });
     }).fail(function () {
-        console.log("error getting cdnjs libraries");
         alert("error getting cdnjs libraries");
     });
     
@@ -425,10 +417,11 @@ E(document).ready(function () {
         }
     });
     
-    // toggle css reset
-    E('.toggle-reset').on('click', function () {
-        E(this).toggleClass('active');
-        loadCSS();
+    // reset editor
+    E('.reset-editor').on('click', function () {
+        editorHTML.setValue('');
+        editorCSS.setValue('');
+        editorJS.setValue('');
     });
     
     // run script
