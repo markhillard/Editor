@@ -116,7 +116,7 @@ E(document).ready(function () {
     // load css
     function loadCSS() {
         var head = E('#preview').contents().find('head');
-        var reset = '<link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">';
+        var reset = '<link rel="stylesheet" href="./css/reset.css">';
         var css = editorCSS.getValue();
         head.html(reset + '<style>' + css + '</style>');
     }
