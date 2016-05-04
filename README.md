@@ -17,5 +17,12 @@ Editor is an HTML / CSS / JS code editor that renders what you type in real-time
 - CSS Reset Injection
 - Dependency Injection
 - Run Scripts In Browser
+
+### CodeMirror Addons
+
 - [Sublime Keymap](https://codemirror.net/demo/sublime.html)
 - [Emmet](https://github.com/emmetio/codemirror)
+
+## Browser Support
+
+Editor works in all modern web browsers and IE10+.
