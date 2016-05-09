@@ -205,7 +205,7 @@ E(document).ready(function () {
             local: searchData
         });
         
-        E(typeahead).typeahead(null, {
+        typeahead.typeahead(null, {
             display: 'name',
             name: 'search',
             source: search,
@@ -217,11 +217,11 @@ E(document).ready(function () {
                     return '<p>' + data.name + '</p>';
                 }
             }
-        }).bind('typeahead:select', function (e, datum) {
+        }).on('typeahead:select', function (e, datum) {
             var latest = datum.latest;
             loadDep(latest);
             clearSearch();
-        }).bind('typeahead:change', function () {
+        }).on('typeahead:change', function () {
             clearSearch();
         });
     }).fail(function () {
@@ -230,8 +230,8 @@ E(document).ready(function () {
     
     // clear typeahead search and close results list
     function clearSearch() {
-        E(typeahead).typeahead('val', '');
-        E(typeahead).typeahead('close');
+        typeahead.typeahead('val', '');
+        typeahead.typeahead('close');
     }
     
     // load dependency
