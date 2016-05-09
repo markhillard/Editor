@@ -263,7 +263,7 @@ E(document).ready(function () {
     var widthBox = E('.preview-width');
     var windowWidth = E(window).width();
     
-    E(resizeHandle).resizable({
+    resizeHandle.resizable({
         handles: 'e',
         minWidth: 0,
         maxWidth: windowWidth - 16,
@@ -349,17 +349,17 @@ E(document).ready(function () {
     var vScroll = E('.CodeMirror-overlayscroll-vertical');
     var hScroll = E('.CodeMirror-overlayscroll-horizontal');
     
-    E(vScroll).on('mousedown', function () {
-        E(this).addClass('hold');
+    vScroll.on('mousedown', function () {
+        this.addClass('hold');
     });
     
-    E(hScroll).on('mousedown', function () {
-        E(this).addClass('hold');
+    hScroll.on('mousedown', function () {
+        this.addClass('hold');
     });
     
     E(document).on('mouseup', function () {
-        E(vScroll).removeClass('hold');
-        E(hScroll).removeClass('hold');
+        vScroll.removeClass('hold');
+        hScroll.removeClass('hold');
     });
     
     // indent wrapped lines
