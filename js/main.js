@@ -298,14 +298,14 @@ E(document).ready(function () {
     // ------------------------------
     // code pane and wrap button swapping
     function swapOn(elem) {
-        E(elem).css({
+        elem.css({
             'position': 'relative',
             'visibility': 'visible'
         });
     }
     
     function swapOff(elem) {
-        E(elem).css({
+        elem.css({
             'position': 'absolute',
             'visibility': 'hidden'
         });
