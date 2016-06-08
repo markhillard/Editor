@@ -149,6 +149,10 @@ position:absolute;
 right:260px;
 }
 
+.code-tools span .fa {
+font-weight:400;
+}
+
 .code-swap span,
 .code-tools span {
 background-color:#282a36;
@@ -162,9 +166,15 @@ padding:10px 15px;
 text-decoration:none;
 }
 
+.code-swap span:hover,
+.code-tools span:hover {
+background-color:rgba(0,0,0,.15);
+}
+
 .code-swap span.active,
-.code-tools span.active {
-background-color:#6d8a88;
+.code-tools span.active,
+.code-tools span:active {
+background-color:#6d8a88 !important;
 color:#333540;
 }
 

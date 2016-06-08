@@ -157,7 +157,7 @@ E(document).ready(function () {
     }
     
     if (localStorage.getItem('jscode') === null) {
-        var defaultJS = 'alert(\'Pow! Right in the kisser.\');';
+        var defaultJS = '$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').delay(400).fadeOut(800).fadeIn(400);\n});';
         localStorage.setItem('jscode', defaultJS);
     }
     
@@ -209,6 +209,7 @@ E(document).ready(function () {
             display: 'name',
             name: 'search',
             source: search,
+            limit: 6,
             templates: {
                 empty: function () {
                     return '<div class="no-match">unable to match query</div>';
@@ -382,46 +383,46 @@ E(document).ready(function () {
     // UTILITY FUNCTIONS
     // ------------------------------
     // toggle line wrapping (html)
-    E('.toggle-lineWrapping.html').on('click', function () {
+    E('.toggle-lineWrapping.html').on('mousedown', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorHTML.setOption('lineWrapping', true);
-            E(this).html('wrap &#10559;');
+            E(this).html('WRAP <i class="fa fa-toggle-on"></i>');
         } else {
             editorHTML.setOption('lineWrapping', false);
-            E(this).html('wrap &#10558;');
+            E(this).html('WRAP <i class="fa fa-toggle-off"></i>');
         }
     });
     
     // toggle line wrapping (css)
-    E('.toggle-lineWrapping.css').on('click', function () {
+    E('.toggle-lineWrapping.css').on('mousedown', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorCSS.setOption('lineWrapping', true);
-            E(this).html('wrap &#10559;');
+            E(this).html('WRAP <i class="fa fa-toggle-on"></i>');
         } else {
             editorCSS.setOption('lineWrapping', false);
-            E(this).html('wrap &#10558;');
+            E(this).html('WRAP <i class="fa fa-toggle-off"></i>');
         }
     });
     
     // toggle line wrapping (js)
-    E('.toggle-lineWrapping.js').on('click', function () {
+    E('.toggle-lineWrapping.js').on('mousedown', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorJS.setOption('lineWrapping', true);
-            E(this).html('wrap &#10559;');
+            E(this).html('WRAP <i class="fa fa-toggle-on"></i>');
         } else {
             editorJS.setOption('lineWrapping', false);
-            E(this).html('wrap &#10558;');
+            E(this).html('WRAP <i class="fa fa-toggle-off"></i>');
         }
     });
     
     // reset editor
     E('.reset-editor').on('click', function () {
-        editorHTML.setValue('<main>\n    <h1>Editor<\/h1>\n    <p>It\'s an editor.<\/p>\n<\/main>');
+        editorHTML.setValue('<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>\n<main>\n    <h1>Editor<\/h1>\n    <p>It\'s an editor.<\/p>\n<\/main>');
         editorCSS.setValue('@import url(\"https:\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    margin: 1rem 0;\n}');
-        editorJS.setValue('alert(\'Pow! Right in the kisser.\');');
+        editorJS.setValue('$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').delay(400).fadeOut(800).fadeIn(400);\n});');
     });
     
     // clear editor
