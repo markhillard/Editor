@@ -147,7 +147,7 @@ E(document).ready(function () {
     // LOCAL STORAGE
     // ------------------------------
     if (localStorage.getItem('htmlcode') === null) {
-        var defaultHTML = '<main>\n    <h1>Editor<\/h1>\n    <p>It\'s an editor.<\/p>\n<\/main>';
+        var defaultHTML = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>\n<main>\n    <h1>Editor<\/h1>\n    <p>It\'s an editor.<\/p>\n<\/main>';
         localStorage.setItem('htmlcode', defaultHTML);
     }
     
