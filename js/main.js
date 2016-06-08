@@ -350,11 +350,11 @@ E(document).ready(function () {
     var hScroll = E('.CodeMirror-overlayscroll-horizontal');
     
     vScroll.on('mousedown', function () {
-        this.addClass('hold');
+        E(this).addClass('hold');
     });
     
     hScroll.on('mousedown', function () {
-        this.addClass('hold');
+        E(this).addClass('hold');
     });
     
     E(document).on('mouseup', function () {
