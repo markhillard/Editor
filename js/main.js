@@ -425,6 +425,11 @@ E(document).ready(function () {
         editorJS.setValue('$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').delay(400).fadeOut(800).fadeIn(400);\n});');
     });
     
+    // refresh editor
+    E('.refresh-editor').click(function () {
+        location.reload();
+    });
+    
     // clear editor
     E('.clear-editor').on('click', function () {
         editorHTML.setValue('');
