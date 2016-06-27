@@ -12,13 +12,16 @@ Editor is an HTML / CSS / JS code editor that renders what you type in real-time
 ## Features
 
 - Auto-Save (Local Storage)
-- Syntax Highlighting
-- Resizable Code/Preview Panes
+- Resizable Code/Preview Pane
 - Preview Pane Width Indicator
+- Syntax Highlighting
+- Eric Meyer's CSS Reset
 - Text Wrapping Toggles
-- CSS Reset Injection
-- Dependency Injection
+- Reset Editor Defaults
+- Refresh Editor
+- Clear Editor
 - Run Scripts In Browser
+- Dependency Injection
 
 ### CodeMirror Addons
 
