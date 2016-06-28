@@ -239,19 +239,20 @@ E(document).ready(function () {
     function loadDep(url) {
         var dep;
         
-        // if dependency script tags are included
         if (url.indexOf('<') !== -1) {
             dep = url;
         } else {
             dep = '<script src="' + url + '"><\/script>';
         }
         
-        // if dependency is already included
         if (html.indexOf(dep) !== -1) {
             alert('dependency already included');
         } else {
-            html = dep + '\n' + html;
-            editorHTML.setValue(html);
+            var insert = html.split('<\/script>').length - 1;
+            editorHTML.replaceRange(dep + '\n', {
+                line: insert,
+                ch: 0
+            });
             alert('dependency added successfully');
         }
     }
