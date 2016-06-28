@@ -195,7 +195,7 @@ E(document).ready(function () {
     // DEPENDENCY INJECTION
     // ------------------------------
     // cdnjs typeahead search
-    var typeahead = E('.cdnjs-search .query');
+    var query = E('.cdnjs-search .query');
     
     E.get('https://api.cdnjs.com/libraries').done(function (data) {
         var searchData = data.results;
@@ -205,7 +205,7 @@ E(document).ready(function () {
             local: searchData
         });
         
-        typeahead.typeahead(null, {
+        query.typeahead(null, {
             display: 'name',
             name: 'search',
             source: search,
@@ -231,8 +231,8 @@ E(document).ready(function () {
     
     // clear typeahead search and close results list
     function clearSearch() {
-        typeahead.typeahead('val', '');
-        typeahead.typeahead('close');
+        query.typeahead('val', '');
+        query.typeahead('close');
     }
     
     // load dependency
