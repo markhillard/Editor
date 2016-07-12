@@ -168,7 +168,7 @@ text-decoration:none;
 
 .code-swap span:hover,
 .code-tools span:hover {
-background-color:rgba(0,0,0,.15);
+background-color:rgba(0,0,0,.2);
 }
 
 .code-swap span.active,

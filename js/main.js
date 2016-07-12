@@ -46,9 +46,6 @@ E(document).ready(function () {
         styleActiveLine: true
     });
     
-    // emmet support for html
-    emmetCodeMirror(editorHTML);
-    
     // css code
     var editorCSS = document.editor = CodeMirror.fromTextArea(csscode, {
         mode: 'css',
@@ -63,9 +60,6 @@ E(document).ready(function () {
         scrollbarStyle: 'overlay',
         styleActiveLine: true
     });
-    
-    // emmet support for css
-    emmetCodeMirror(editorCSS);
     
     // js code
     var editorJS = document.editor = CodeMirror.fromTextArea(jscode, {
@@ -320,12 +314,14 @@ E(document).ready(function () {
         var wrapHTML = E('.toggle-lineWrapping.html');
         var wrapCSS = E('.toggle-lineWrapping.css');
         var wrapJS = E('.toggle-lineWrapping.js');
+        var toggleEmmet = E('.toggle-emmet');
         
         E(this).addClass('active').siblings().removeClass('active');
         
         if (E(this).is(':contains("HTML")')) {
             swapOn(codeHTML);
             swapOn(wrapHTML);
+            swapOn(toggleEmmet);
             swapOff(codeCSS);
             swapOff(wrapCSS);
             swapOff(codeJS);
@@ -335,6 +331,7 @@ E(document).ready(function () {
             swapOff(wrapHTML);
             swapOn(codeCSS);
             swapOn(wrapCSS);
+            swapOn(toggleEmmet);
             swapOff(codeJS);
             swapOff(wrapJS);
         } else if (E(this).is(':contains("JS")')) {
@@ -342,6 +339,7 @@ E(document).ready(function () {
             swapOff(wrapHTML);
             swapOff(codeCSS);
             swapOff(wrapCSS);
+            swapOff(toggleEmmet);
             swapOn(codeJS);
             swapOn(wrapJS);
         }
@@ -416,6 +414,17 @@ E(document).ready(function () {
         } else {
             editorJS.setOption('lineWrapping', false);
             E(this).html('wrap <i class="fa fa-toggle-off"></i>');
+        }
+    });
+    
+    // emmet
+    E('.toggle-emmet').on('click', function () {
+        E(this).toggleClass('active');
+        if (E(this).hasClass('active')) {
+            emmetCodeMirror(editorHTML);
+            emmetCodeMirror(editorCSS);
+        } else {
+            emmetCodeMirror.dispose(editorHTML);
         }
     });
     
