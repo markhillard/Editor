@@ -425,6 +425,7 @@ E(document).ready(function () {
             emmetCodeMirror(editorCSS);
         } else {
             emmetCodeMirror.dispose(editorHTML);
+            emmetCodeMirror.dispose(editorCSS);
         }
     });
     
