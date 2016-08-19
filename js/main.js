@@ -203,7 +203,7 @@ E(document).ready(function () {
             display: 'name',
             name: 'search',
             source: search,
-            limit: 6,
+            limit: 10,
             templates: {
                 empty: function () {
                     return '<div class="no-match">unable to match query</div>';
