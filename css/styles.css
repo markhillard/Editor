@@ -156,6 +156,7 @@ font-weight:400;
 .code-swap span,
 .code-tools span {
 background-color:#282a36;
+border-right:1px solid #0e0f13;
 color:#6d8a88;
 cursor:pointer;
 display:inline-block;
@@ -166,9 +167,14 @@ padding:10px 15px;
 text-decoration:none;
 }
 
+.code-swap span:first-child,
+.code-tools span.toggle-lineWrapping {
+border-left:1px solid #0e0f13;
+}
+
 .code-swap span:hover,
 .code-tools span:hover {
-background-color:rgba(0,0,0,.2);
+background-color:#0e0f13;
 }
 
 .code-swap span.active,
