@@ -106,6 +106,14 @@ background:rgba(255,255,255,.05);
 border-radius:0;
 }
 
+.CodeMirror-matchingtag,
+.CodeMirror-matchingbracket {
+background:none;
+border-bottom:1px solid #fff;
+text-decoration:none !important;
+}
+
+
 
 
 /* jQuery UI Overrides

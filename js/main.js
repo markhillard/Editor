@@ -41,6 +41,10 @@ E(document).ready(function () {
         theme: 'dracula',
         tabSize: 4,
         indentUnit: 4,
+        matchTags: {
+            bothTags: true
+        },
+        matchBrackets: false,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
         styleActiveLine: true
@@ -56,6 +60,7 @@ E(document).ready(function () {
         theme: 'dracula',
         tabSize: 4,
         indentUnit: 4,
+        matchBrackets: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
         styleActiveLine: true
@@ -70,6 +75,7 @@ E(document).ready(function () {
         theme: 'dracula',
         tabSize: 4,
         indentUnit: 4,
+        matchBrackets: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
         styleActiveLine: true
