@@ -15,6 +15,9 @@ Editor is an HTML / CSS / JS code editor that renders what you type in real-time
 - Resizable Code/Preview Pane
 - Preview Pane Width Indicator
 - Syntax Highlighting
+- Code Folding
+- Tag/Bracket Matching
+- Auto-Close HTML Tags
 - Eric Meyer's CSS Reset
 - Text Wrapping Toggles
 - Reset Editor Defaults
@@ -27,6 +30,8 @@ Editor is an HTML / CSS / JS code editor that renders what you type in real-time
 
 - [Sublime Keymap](https://codemirror.net/demo/sublime.html)
 - [Emmet](https://github.com/emmetio/codemirror)
+
+**Note:** If Emmet is enabled the Sublime Keymap will be disabled, and vice-versa.
 
 ## Browser Support
 
