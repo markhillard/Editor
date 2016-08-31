@@ -47,6 +47,7 @@ E(document).ready(function () {
             bothTags: true
         },
         matchBrackets: false,
+        autoCloseTags: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
         styleActiveLine: true
