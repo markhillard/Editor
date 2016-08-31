@@ -41,6 +41,8 @@ E(document).ready(function () {
         theme: 'dracula',
         tabSize: 4,
         indentUnit: 4,
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         matchTags: {
             bothTags: true
         },
@@ -60,6 +62,8 @@ E(document).ready(function () {
         theme: 'dracula',
         tabSize: 4,
         indentUnit: 4,
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         matchBrackets: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
@@ -75,6 +79,8 @@ E(document).ready(function () {
         theme: 'dracula',
         tabSize: 4,
         indentUnit: 4,
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         matchBrackets: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',

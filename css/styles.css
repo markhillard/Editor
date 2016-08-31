@@ -113,6 +113,14 @@ border-bottom:1px solid #fff;
 text-decoration:none !important;
 }
 
+.CodeMirror-guttermarker-subtle {
+color:#6d8a88;
+}
+
+.CodeMirror-foldmarker {
+color:#fff;
+text-shadow:none;
+}
 
 
 
