@@ -31,12 +31,22 @@
 
   MT("class",
      "[keyword class] [def Point] [keyword extends] [variable SuperThing] {",
-     "  [property get] [property prop]() { [keyword return] [number 24]; }",
+     "  [keyword get] [property prop]() { [keyword return] [number 24]; }",
      "  [property constructor]([def x], [def y]) {",
      "    [keyword super]([string 'something']);",
      "    [keyword this].[property x] [operator =] [variable-2 x];",
      "  }",
      "}");
+
+  MT("anonymous_class_expression",
+     "[keyword const] [def Adder] [operator =] [keyword class] [keyword extends] [variable Arithmetic] {",
+     "  [property add]([def a], [def b]) {}",
+     "};");
+
+  MT("named_class_expression",
+     "[keyword const] [def Subber] [operator =] [keyword class] [def Subtract] {",
+     "  [property sub]([def a], [def b]) {}",
+     "};");
 
   MT("import",
      "[keyword function] [def foo]() {",
@@ -140,6 +150,19 @@
      "    [number 1];",
      "[number 2];");
 
+  MT("indent_semicolonless_if",
+     "[keyword function] [def foo]() {",
+     "  [keyword if] ([variable x])",
+     "    [variable foo]()",
+     "}")
+
+  MT("indent_semicolonless_if_with_statement",
+     "[keyword function] [def foo]() {",
+     "  [keyword if] ([variable x])",
+     "    [variable foo]()",
+     "  [variable bar]()",
+     "}")
+
   MT("multilinestring",
      "[keyword var] [def x] [operator =] [string 'foo\\]",
      "[string bar'];");
@@ -177,6 +200,12 @@
 
   TS("arrow_type",
      "[keyword let] [def x]: ([variable arg]: [variable-3 Type]) [operator =>] [variable-3 ReturnType]")
+
+  TS("typescript_class",
+     "[keyword class] [def Foo] {",
+     "  [keyword public] [keyword static] [property main]() {}",
+     "  [keyword private] [property _foo]: [variable-3 string];",
+     "}")
 
   var jsonld_mode = CodeMirror.getMode(
     {indentUnit: 2},

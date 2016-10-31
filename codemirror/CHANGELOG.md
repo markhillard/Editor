@@ -1,3 +1,53 @@
+## 5.20.2 (2016-10-21)
+
+### Bug fixes
+
+Fix `CodeMirror.version` returning the wrong version number.
+
+## 5.20.0 (2016-10-20)
+
+### Bug fixes
+
+Make `newlineAndIndent` command work with multiple cursors on the same line.
+
+Make sure keypress events for backspace are ignored.
+
+Tokens styled with overlays no longer get a nonsense `cm-cm-overlay` class.
+
+Line endings for pasted content are now normalized to the editor's [preferred ending](http://codemirror.net/doc/manual.html#option_lineSeparator).
+
+[javascript mode](http://codemirror.net/mode/javascript): Improve support for class expressions. Support TypeScript optional class properties, the `abstract` keyword, and return type declarations for arrow functions.
+
+[css mode](http://codemirror.net/mode/css): Fix highlighting of mixed-case keywords.
+
+[closebrackets addon](http://codemirror.net/doc/manual.html#addon_closebrackets): Improve behavior when typing a quote before a string.
+
+### New features
+
+The core is now maintained as a number of small files, using ES6 syntax and modules, under the `src/` directory. A git checkout no longer contains a working `codemirror.js` until you `npm build` (but when installing from NPM, it is included).
+
+The [`refresh`](http://codemirror.net/doc/manual.html#event_refresh) event is now documented and stable.
+
+## 5.19.0 (2016-09-20)
+
+### Bugfixes
+
+[erlang mode](http://codemirror.net/mode/erlang): Fix mode crash when trying to read an empty context.
+
+[comment addon](http://codemirror.net/doc/manual.html#addon_comment): Fix broken behavior when toggling comments inside a comment.
+
+xml-fold addon: Fix a null-dereference bug.
+
+Page up and page down now do something even in single-line documents.
+
+Fix an issue where the cursor position could be off in really long (~8000 character) tokens.
+
+### New features
+
+[javascript mode](http://codemirror.net/mode/javascript): Better indentation when semicolons are missing. Better support for TypeScript classes, optional parameters, and the `type` keyword.
+
+The [`blur`](http://codemirror.net/doc/manual.html#event_blur) and [`focus`](http://codemirror.net/doc/manual.html#event_focus) events now pass the DOM event to their handlers.
+
 ## 5.18.2 (2016-08-23)
 
 ### Bugfixes

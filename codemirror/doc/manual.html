@@ -69,7 +69,7 @@
 <section class=first id=overview>
     <h2 style="position: relative">
       User manual and reference guide
-      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.18.2</span>
+      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.20.2</span>
     </h2>
 
     <p>CodeMirror is a code-editor component that can be embedded in
@@ -96,8 +96,7 @@
     <p>The easiest way to use CodeMirror is to simply load the script
     and style sheet found under <code>lib/</code> in the distribution,
     plus a mode script from one of the <code>mode/</code> directories.
-    (See <a href="compress.html">the compression helper</a> for an
-    easy way to combine scripts.) For example:</p>
+    For example:</p>
 
     <pre data-lang="text/html">&lt;script src="lib/codemirror.js">&lt;/script>
 &lt;link rel="stylesheet" href="lib/codemirror.css">
@@ -626,14 +625,19 @@
       You can <code>preventDefault</code> the event, to signal that
       CodeMirror should do no further handling.</dd>
 
-      <dt id="event_focus"><code><strong>"focus"</strong> (instance: CodeMirror)</code></dt>
+      <dt id="event_focus"><code><strong>"focus"</strong> (instance: CodeMirror, event: Event)</code></dt>
       <dd>Fires whenever the editor is focused.</dd>
 
-      <dt id="event_blur"><code><strong>"blur"</strong> (instance: CodeMirror)</code></dt>
+      <dt id="event_blur"><code><strong>"blur"</strong> (instance: CodeMirror, event: Event)</code></dt>
       <dd>Fires whenever the editor is unfocused.</dd>
 
       <dt id="event_scroll"><code><strong>"scroll"</strong> (instance: CodeMirror)</code></dt>
       <dd>Fires when the editor is scrolled.</dd>
+
+      <dt id="event_refresh"><code><strong>"refresh"</strong> (instance: CodeMirror)</code></dt>
+      <dd>Fires when the editor is <a href="#refresh">refreshed</a>
+      or <a href="#setSize">resized</a>. Mostly useful to invalidate
+      cached values that depend on the editor or character size.</dd>
 
       <dt id="event_scrollCursorIntoView"><code><strong>"scrollCursorIntoView"</strong> (instance: CodeMirror, event: Event)</code></dt>
       <dd>Fires when the editor tries to scroll its cursor into view.
@@ -2579,7 +2583,7 @@ editor.setOption("extraKeys", {
         <dd>Optional <code>to</code> position that will be used by <code>pick()</code> instead
         of the global one passed with the full list of completions.</dd>
       </dl></dd>
-      
+
       <dd>The plugin understands the following options (the options object
       will also be passed along to the hinting function, which may
       understand additional options):
@@ -2982,6 +2986,12 @@ editor.setOption("extraKeys", {
           <dt><code><strong>showDifferences</strong>: boolean</code></dt>
           <dd>When true (the default), changed pieces of text are
           highlighted.</dd>
+          <dt><code><strong>chunkClassLocation</strong>: string|Array</code></dt>
+          <dd>By default the chunk highlights are added
+          using <a href="#addLineClass"><code>addLineClass</code></a>
+          with "background". Override this to customize it to be any
+          valid `where` parameter or an Array of valid `where`
+          parameters.</dd>
         </dl>
         The addon also defines commands <code>"goNextDiff"</code>
         and <code>"goPrevDiff"</code> to quickly jump to the next
