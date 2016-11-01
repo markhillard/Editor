@@ -24,6 +24,7 @@ Editor is an HTML/CSS/JS code editor that renders what you type in real-time. It
 - Refresh Editor
 - Clear Editor
 - Run Scripts In Browser
+- Save As HTML File
 - Dependency Injection
 
 ### CodeMirror Addons
