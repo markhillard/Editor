@@ -7,6 +7,7 @@ Editor is an HTML/CSS/JS code editor that renders what you type in real-time. It
 - [jQuery](http://jquery.com/)
 - [jQuery UI - Resizable](https://jqueryui.com/resizable/)
 - [CodeMirror](https://codemirror.net/)
+- [FileSaver.js](https://github.com/eligrey/FileSaver.js)
 - [typeahead.js](https://twitter.github.io/typeahead.js/)
 
 ## Features
