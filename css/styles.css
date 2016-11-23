@@ -200,6 +200,44 @@ background-color:#6d8a88 !important;
 color:#333540;
 }
 
+.code-tools span.toggle-tools {
+display:none;
+}
+
+/* Custom */
+@media only screen and (max-width:1181px) {
+    .code-tools span {
+    border-left:1px solid #0e0f13;
+    display:block;
+    position:relative;
+    text-align:right;
+    z-index:100;
+    }
+    
+    .code-tools span:last-child {
+    border-bottom:1px solid #0e0f13;
+    }
+    
+    .code-tools span.toggle-tools {
+    display:block;
+    }
+    
+    .code-tools span.toggle-tools ~ span {
+    display:none;
+    }
+    
+    .code-tools span.toggle-tools.active,
+    .code-tools span.toggle-tools:active {
+    background-color:#0e0f13 !important;
+    color:#6d8a88;
+    }
+    
+    .code-tools span.toggle-tools.active ~ span {
+    border-top:1px solid #0e0f13;
+    display:block;
+    }
+}
+
 /* IE10+ */
 @media screen and (-ms-high-contrast:active), (-ms-high-contrast:none) {
     .toggle-lineWrapping {

@@ -394,6 +394,16 @@ E(document).ready(function () {
     
     // UTILITY FUNCTIONS
     // ------------------------------
+    // toggle tools
+    E('.toggle-tools').on('click', function () {
+        E(this).toggleClass('active');
+        if (E(this).hasClass('active')) {
+            E(this).html('tools <i class="fa fa-chevron-up"></i>');
+        } else {
+            E(this).html('tools <i class="fa fa-chevron-down"></i>');
+        }
+    });
+    
     // toggle line wrapping (html)
     E('.toggle-lineWrapping.html').on('mousedown', function () {
         E(this).toggleClass('active');
