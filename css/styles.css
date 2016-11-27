@@ -444,6 +444,12 @@ position:relative;
 
 /* Mobile & Tablet */
 @media only screen and (max-width:800px) {
+    #editor,
+    .preview-pane,
+    [class^="code-pane-"] {
+    height:calc(100vh - 103px);
+    }
+    
     #preview,
     .code-pane,
     .preview-pane {
