@@ -216,7 +216,7 @@ E(document).ready(function () {
             display: 'name',
             name: 'search',
             source: search,
-            limit: 10,
+            limit: 5,
             templates: {
                 empty: function () {
                     return '<div class="no-match">unable to match query</div>';
@@ -320,7 +320,7 @@ E(document).ready(function () {
         });
     }
     
-    E('.code-swap span').on('click', function () {
+    E('.code-swap span').not('.toggle-view').on('click', function () {
         var codeHTML = E('.code-pane-html');
         var codeCSS = E('.code-pane-css');
         var codeJS = E('.code-pane-js');
@@ -328,6 +328,7 @@ E(document).ready(function () {
         var wrapCSS = E('.toggle-lineWrapping.css');
         var wrapJS = E('.toggle-lineWrapping.js');
         var toggleEmmet = E('.toggle-emmet');
+        var preview = E('.preview-pane');
         
         E(this).addClass('active').siblings().removeClass('active');
         
@@ -339,22 +340,46 @@ E(document).ready(function () {
             swapOff(wrapCSS);
             swapOff(codeJS);
             swapOff(wrapJS);
+            if (E(window).width() <= 800) {
+                swapOff(preview);
+            } else {
+                swapOn(preview);
+            }
         } else if (E(this).is(':contains("CSS")')) {
-            swapOff(codeHTML);
-            swapOff(wrapHTML);
             swapOn(codeCSS);
             swapOn(wrapCSS);
             swapOn(toggleEmmet);
+            swapOff(codeHTML);
+            swapOff(wrapHTML);
             swapOff(codeJS);
             swapOff(wrapJS);
+            if (E(window).width() <= 800) {
+                swapOff(preview);
+            } else {
+                swapOn(preview);
+            }
         } else if (E(this).is(':contains("JS")')) {
+            swapOn(codeJS);
+            swapOn(wrapJS);
             swapOff(codeHTML);
             swapOff(wrapHTML);
             swapOff(codeCSS);
             swapOff(wrapCSS);
             swapOff(toggleEmmet);
-            swapOn(codeJS);
-            swapOn(wrapJS);
+            if (E(window).width() <= 800) {
+                swapOff(preview);
+            } else {
+                swapOn(preview);
+            }
+        } else if (E(this).is(':contains("preview")')) {
+            swapOn(preview);
+            swapOff(codeHTML);
+            swapOff(wrapHTML);
+            swapOff(codeCSS);
+            swapOff(wrapCSS);
+            swapOff(codeJS);
+            swapOff(wrapJS);
+            swapOff(toggleEmmet);
         }
     });
     
@@ -394,6 +419,16 @@ E(document).ready(function () {
     
     // UTILITY FUNCTIONS
     // ------------------------------
+    // toggle view
+    E('.toggle-view').on('click', function () {
+        E(this).toggleClass('enabled');
+        if (E(this).hasClass('enabled')) {
+            E(this).html('view <i class="fa fa-chevron-up"></i>');
+        } else {
+            E(this).html('view <i class="fa fa-chevron-down"></i>');
+        }
+    });
+    
     // toggle tools
     E('.toggle-tools').on('click', function () {
         E(this).toggleClass('active');
