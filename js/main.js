@@ -154,12 +154,12 @@ E(document).ready(function () {
     // LOCAL STORAGE
     // ------------------------------
     if (localStorage.getItem('htmlcode') === null) {
-        var defaultHTML = '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>\n<main>\n    <h1>Editor<\/h1>\n    <p>It\'s an editor.<\/p>\n<\/main>';
+        var defaultHTML = '\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>It\'s an editor.\</p\>\n\</main\>';
         localStorage.setItem('htmlcode', defaultHTML);
     }
     
     if (localStorage.getItem('csscode') === null) {
-        var defaultCSS = '@import url(\"https:\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    margin: 1rem 0;\n}';
+        var defaultCSS = '@import url(\"https://fonts.googleapis.com/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    margin: 1rem 0;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 5rem;\n    }\n}';
         localStorage.setItem('csscode', defaultCSS);
     }
     
@@ -489,8 +489,8 @@ E(document).ready(function () {
     
     // reset editor
     E('.reset-editor').on('click', function () {
-        editorHTML.setValue('<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>\n<main>\n    <h1>Editor<\/h1>\n    <p>It\'s an editor.<\/p>\n<\/main>');
-        editorCSS.setValue('@import url(\"https:\/\/fonts.googleapis.com\/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    margin: 1rem 0;\n}');
+        editorHTML.setValue('\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>It\'s an editor.\</p\>\n\</main\>');
+        editorCSS.setValue('@import url(\"https://fonts.googleapis.com/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    margin: 1rem 0;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 5rem;\n    }\n}');
         editorJS.setValue('$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').delay(400).fadeOut(800).fadeIn(400);\n});');
     });
     
