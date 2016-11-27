@@ -67,10 +67,6 @@ font-size:.9rem;
 height:100%;
 }
 
-.CodeMirror-sizer {
-height:100% !important;
-}
-
 .CodeMirror-lines {
 padding:0;
 }
@@ -445,14 +441,11 @@ position:relative;
 /* Mobile & Tablet */
 @media only screen and (max-width:800px) {
     #editor,
+    #preview,
+    .code-pane,
     .preview-pane,
     [class^="code-pane-"] {
     height:calc(100vh - 103px);
-    }
-    
-    #preview,
-    .code-pane,
-    .preview-pane {
     margin-left:0 !important;
     width:100% !important;
     width:100vw !important;
