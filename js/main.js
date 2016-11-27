@@ -511,6 +511,10 @@ E(document).ready(function () {
         loadJS();
         loadCSS();
         loadHTML();
+        
+        if (E(window).width() <= 800) {
+            E('.toggle-preview').click();
+        }
     });
     
     // save as html file
