@@ -49,6 +49,7 @@ html,body {
 font-family:"Source Code Pro", monospace;
 font-size:100%;
 font-weight:400;
+height:100%;
 line-height:1.45;
 overflow:hidden;
 }
