@@ -2,7 +2,7 @@
 
 [![Editor releases](https://img.shields.io/github/release/markhillard/Editor.svg)](https://github.com/markhillard/Editor/releases)
 
-Editor is an HTML/CSS/JS code editor that renders what you type in real-time. It utilizes the following libraries:
+Editor is a responsive HTML/CSS/JS code editor that renders what you type in real-time. It utilizes the following libraries:
 
 - [jQuery](http://jquery.com/)
 - [jQuery UI - Resizable](https://jqueryui.com/resizable/)
