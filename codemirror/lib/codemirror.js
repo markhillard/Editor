@@ -103,18 +103,20 @@ function contains(parent, child) {
   } while (child = child.parentNode)
 }
 
-var activeElt = function() {
-  var activeElement = document.activeElement
+function activeElt() {
+  // IE and Edge may throw an "Unspecified Error" when accessing document.activeElement.
+  // IE < 10 will throw when accessed while the page is loading or in an iframe.
+  // IE > 9 and Edge will throw when accessed in an iframe if document.body is unavailable.
+  var activeElement
+  try {
+    activeElement = document.activeElement
+  } catch(e) {
+    activeElement = document.body || null
+  }
   while (activeElement && activeElement.root && activeElement.root.activeElement)
     { activeElement = activeElement.root.activeElement }
   return activeElement
 }
-// Older versions of IE throws unspecified error when touching
-// document.activeElement in some cases (during loading, in iframe)
-if (ie && ie_version < 11) { activeElt = function() {
-  try { return document.activeElement }
-  catch(e) { return document.body }
-} }
 
 function addClass(node, cls) {
   var current = node.className
@@ -1134,39 +1136,40 @@ function getOrder(line) {
 // Lightweight event framework. on/off also work on DOM nodes,
 // registering native DOM handlers.
 
+var noHandlers = []
+
 var on = function(emitter, type, f) {
-  if (emitter.addEventListener)
-    { emitter.addEventListener(type, f, false) }
-  else if (emitter.attachEvent)
-    { emitter.attachEvent("on" + type, f) }
-  else {
+  if (emitter.addEventListener) {
+    emitter.addEventListener(type, f, false)
+  } else if (emitter.attachEvent) {
+    emitter.attachEvent("on" + type, f)
+  } else {
     var map$$1 = emitter._handlers || (emitter._handlers = {})
-    var arr = map$$1[type] || (map$$1[type] = [])
-    arr.push(f)
+    map$$1[type] = (map$$1[type] || noHandlers).concat(f)
   }
 }
 
-var noHandlers = []
-function getHandlers(emitter, type, copy) {
-  var arr = emitter._handlers && emitter._handlers[type]
-  if (copy) { return arr && arr.length > 0 ? arr.slice() : noHandlers }
-  else { return arr || noHandlers }
+function getHandlers(emitter, type) {
+  return emitter._handlers && emitter._handlers[type] || noHandlers
 }
 
 function off(emitter, type, f) {
-  if (emitter.removeEventListener)
-    { emitter.removeEventListener(type, f, false) }
-  else if (emitter.detachEvent)
-    { emitter.detachEvent("on" + type, f) }
-  else {
-    var handlers = getHandlers(emitter, type, false)
-    for (var i = 0; i < handlers.length; ++i)
-      { if (handlers[i] == f) { handlers.splice(i, 1); break } }
+  if (emitter.removeEventListener) {
+    emitter.removeEventListener(type, f, false)
+  } else if (emitter.detachEvent) {
+    emitter.detachEvent("on" + type, f)
+  } else {
+    var map$$1 = emitter._handlers, arr = map$$1 && map$$1[type]
+    if (arr) {
+      var index = indexOf(arr, f)
+      if (index > -1)
+        { map$$1[type] = arr.slice(0, index).concat(arr.slice(index + 1)) }
+    }
   }
 }
 
 function signal(emitter, type /*, values...*/) {
-  var handlers = getHandlers(emitter, type, true)
+  var handlers = getHandlers(emitter, type)
   if (!handlers.length) { return }
   var args = Array.prototype.slice.call(arguments, 2)
   for (var i = 0; i < handlers.length; ++i) { handlers[i].apply(null, args) }
@@ -2061,7 +2064,7 @@ var orphanDelayedCallbacks = null
 // them to be executed when the last operation ends, or, if no
 // operation is active, when a timeout fires.
 function signalLater(emitter, type /*, values...*/) {
-  var arr = getHandlers(emitter, type, false)
+  var arr = getHandlers(emitter, type)
   if (!arr.length) { return }
   var args = Array.prototype.slice.call(arguments, 2), list
   if (operationGroup) {
@@ -2566,8 +2569,8 @@ function pageScrollY() { return window.pageYOffset || (document.documentElement 
 // coordinates into another coordinate system. Context may be one of
 // "line", "div" (display.lineDiv), "local"./null (editor), "window",
 // or "page".
-function intoCoordSystem(cm, lineObj, rect, context) {
-  if (lineObj.widgets) { for (var i = 0; i < lineObj.widgets.length; ++i) { if (lineObj.widgets[i].above) {
+function intoCoordSystem(cm, lineObj, rect, context, includeWidgets) {
+  if (!includeWidgets && lineObj.widgets) { for (var i = 0; i < lineObj.widgets.length; ++i) { if (lineObj.widgets[i].above) {
     var size = widgetHeight(lineObj.widgets[i])
     rect.top += size; rect.bottom += size
   } } }
@@ -5915,6 +5918,47 @@ Doc.prototype = createObj(BranchChunk.prototype, {
     hist.undone = copyHistoryArray(histData.undone.slice(0), null, true)
   },
 
+  setGutterMarker: docMethodOp(function(line, gutterID, value) {
+    return changeLine(this, line, "gutter", function (line) {
+      var markers = line.gutterMarkers || (line.gutterMarkers = {})
+      markers[gutterID] = value
+      if (!value && isEmpty(markers)) { line.gutterMarkers = null }
+      return true
+    })
+  }),
+
+  clearGutter: docMethodOp(function(gutterID) {
+    var this$1 = this;
+
+    var i = this.first
+    this.iter(function (line) {
+      if (line.gutterMarkers && line.gutterMarkers[gutterID]) {
+        changeLine(this$1, line, "gutter", function () {
+          line.gutterMarkers[gutterID] = null
+          if (isEmpty(line.gutterMarkers)) { line.gutterMarkers = null }
+          return true
+        })
+      }
+      ++i
+    })
+  }),
+
+  lineInfo: function(line) {
+    var n
+    if (typeof line == "number") {
+      if (!isLine(this, line)) { return null }
+      n = line
+      line = getLine(this, line)
+      if (!line) { return null }
+    } else {
+      n = lineNo(line)
+      if (n == null) { return null }
+    }
+    return {line: n, handle: line, text: line.text, gutterMarkers: line.gutterMarkers,
+            textClass: line.textClass, bgClass: line.bgClass, wrapClass: line.wrapClass,
+            widgets: line.widgets}
+  },
+
   addLineClass: docMethodOp(function(handle, where, cls) {
     return changeLine(this, handle, where == "gutter" ? "gutter" : "class", function (line) {
       var prop = where == "text" ? "textClass"
@@ -6729,6 +6773,7 @@ function onKeyPress(e) {
 function onMouseDown(e) {
   var cm = this, display = cm.display
   if (signalDOMEvent(cm, e) || display.activeTouch && display.input.supportsTouch()) { return }
+  display.input.ensurePolled()
   display.shift = e.shiftKey
 
   if (eventInWidget(display, e)) {
@@ -7314,6 +7359,7 @@ function registerEventHandlers(cm) {
   }
   on(d.scroller, "touchstart", function (e) {
     if (!signalDOMEvent(cm, e) && !isMouseLikeTouchEvent(e)) {
+      d.input.ensurePolled()
       clearTimeout(touchFinished)
       var now = +new Date
       d.activeTouch = {start: now, moved: false,
@@ -7753,7 +7799,7 @@ var addEditorMethods = function(CodeMirror) {
       height = fromCoordSystem(this, {top: height, left: 0}, mode || "page").top
       return lineAtHeight(this.doc, height + this.display.viewOffset)
     },
-    heightAtLine: function(line, mode) {
+    heightAtLine: function(line, mode, includeWidgets) {
       var end = false, lineObj
       if (typeof line == "number") {
         var last = this.doc.first + this.doc.size - 1
@@ -7763,51 +7809,12 @@ var addEditorMethods = function(CodeMirror) {
       } else {
         lineObj = line
       }
-      return intoCoordSystem(this, lineObj, {top: 0, left: 0}, mode || "page").top +
+      return intoCoordSystem(this, lineObj, {top: 0, left: 0}, mode || "page", includeWidgets).top +
         (end ? this.doc.height - heightAtLine(lineObj) : 0)
     },
 
     defaultTextHeight: function() { return textHeight(this.display) },
     defaultCharWidth: function() { return charWidth(this.display) },
-
-    setGutterMarker: methodOp(function(line, gutterID, value) {
-      return changeLine(this.doc, line, "gutter", function (line) {
-        var markers = line.gutterMarkers || (line.gutterMarkers = {})
-        markers[gutterID] = value
-        if (!value && isEmpty(markers)) { line.gutterMarkers = null }
-        return true
-      })
-    }),
-
-    clearGutter: methodOp(function(gutterID) {
-      var this$1 = this;
-
-      var doc = this.doc, i = doc.first
-      doc.iter(function (line) {
-        if (line.gutterMarkers && line.gutterMarkers[gutterID]) {
-          line.gutterMarkers[gutterID] = null
-          regLineChange(this$1, i, "gutter")
-          if (isEmpty(line.gutterMarkers)) { line.gutterMarkers = null }
-        }
-        ++i
-      })
-    }),
-
-    lineInfo: function(line) {
-      var n
-      if (typeof line == "number") {
-        if (!isLine(this.doc, line)) { return null }
-        n = line
-        line = getLine(this.doc, line)
-        if (!line) { return null }
-      } else {
-        n = lineNo(line)
-        if (n == null) { return null }
-      }
-      return {line: n, handle: line, text: line.text, gutterMarkers: line.gutterMarkers,
-              textClass: line.textClass, bgClass: line.bgClass, wrapClass: line.wrapClass,
-              widgets: line.widgets}
-    },
 
     getViewport: function() { return {from: this.display.viewFrom, to: this.display.viewTo}},
 
@@ -8142,11 +8149,15 @@ function ContentEditableInput(cm) {
   this.cm = cm
   this.lastAnchorNode = this.lastAnchorOffset = this.lastFocusNode = this.lastFocusOffset = null
   this.polling = new Delayed()
+  this.composing = null
   this.gracePeriod = false
+  this.readDOMTimeout = null
 }
 
 ContentEditableInput.prototype = copyObj({
   init: function(display) {
+    var this$1 = this;
+
     var input = this, cm = input.cm
     var div = input.div = display.lineDiv
     disableBrowserMagic(div, cm.options.spellcheck)
@@ -8160,39 +8171,22 @@ ContentEditableInput.prototype = copyObj({
     })
 
     on(div, "compositionstart", function (e) {
-      var data = e.data
-      input.composing = {sel: cm.doc.sel, data: data, startData: data}
-      if (!data) { return }
-      var prim = cm.doc.sel.primary()
-      var line = cm.getLine(prim.head.line)
-      var found = line.indexOf(data, Math.max(0, prim.head.ch - data.length))
-      if (found > -1 && found <= prim.head.ch)
-        { input.composing.sel = simpleSelection(Pos(prim.head.line, found),
-                                              Pos(prim.head.line, found + data.length)) }
+      this$1.composing = {data: e.data}
     })
-    on(div, "compositionupdate", function (e) { return input.composing.data = e.data; })
+    on(div, "compositionupdate", function (e) {
+      if (!this$1.composing) { this$1.composing = {data: e.data} }
+    })
     on(div, "compositionend", function (e) {
-      var ours = input.composing
-      if (!ours) { return }
-      if (e.data != ours.startData && !/\u200b/.test(e.data))
-        { ours.data = e.data }
-      // Need a small delay to prevent other code (input event,
-      // selection polling) from doing damage when fired right after
-      // compositionend.
-      setTimeout(function () {
-        if (!ours.handled)
-          { input.applyComposition(ours) }
-        if (input.composing == ours)
-          { input.composing = null }
-      }, 50)
+      if (this$1.composing) {
+        if (e.data != this$1.composing.data) { this$1.readFromDOMSoon() }
+        this$1.composing = null
+      }
     })
 
     on(div, "touchstart", function () { return input.forceCompositionEnd(); })
 
     on(div, "input", function () {
-      if (input.composing) { return }
-      if (cm.isReadOnly() || !input.pollContent())
-        { runInOp(input.cm, function () { return regChange(cm); }) }
+      if (!this$1.composing) { this$1.readFromDOMSoon() }
     })
 
     function onCopyCut(e) {
@@ -8323,7 +8317,11 @@ ContentEditableInput.prototype = copyObj({
   },
 
   focus: function() {
-    if (this.cm.options.readOnly != "nocursor") { this.div.focus() }
+    if (this.cm.options.readOnly != "nocursor") {
+      if (!this.selectionInEditor())
+        { this.showSelection(this.prepareSelection(), true) }
+      this.div.focus()
+    }
   },
   blur: function() { this.div.blur() },
   getField: function() { return this.div },
@@ -8353,7 +8351,7 @@ ContentEditableInput.prototype = copyObj({
   },
 
   pollSelection: function() {
-    if (!this.composing && !this.gracePeriod && this.selectionChanged()) {
+    if (!this.composing && this.readDOMTimeout == null && !this.gracePeriod && this.selectionChanged()) {
       var sel = window.getSelection(), cm = this.cm
       this.rememberSelection()
       var anchor = domToPos(cm, sel.anchorNode, sel.anchorOffset)
@@ -8366,8 +8364,17 @@ ContentEditableInput.prototype = copyObj({
   },
 
   pollContent: function() {
+    if (this.readDOMTimeout != null) {
+      clearTimeout(this.readDOMTimeout)
+      this.readDOMTimeout = null
+    }
+
     var cm = this.cm, display = cm.display, sel = cm.doc.sel.primary()
     var from = sel.from(), to = sel.to()
+    if (from.ch == 0 && from.line > cm.firstLine())
+      { from = Pos(from.line - 1, getLine(cm.doc, from.line - 1).length) }
+    if (to.ch == getLine(cm.doc, to.line).text.length && to.line < cm.lastLine())
+      { to = Pos(to.line + 1, 0) }
     if (from.line < display.viewFrom || to.line > display.viewTo - 1) { return false }
 
     var fromIndex, fromLine, fromNode
@@ -8388,6 +8395,7 @@ ContentEditableInput.prototype = copyObj({
       toNode = display.view[toIndex + 1].node.previousSibling
     }
 
+    if (!fromNode) { return false }
     var newText = cm.doc.splitLines(domTextBetween(cm, fromNode, toNode, fromLine, toLine))
     var oldText = getBetween(cm.doc, Pos(fromLine, 0), Pos(toLine, getLine(cm.doc, toLine).text.length))
     while (newText.length > 1 && oldText.length > 1) {
@@ -8407,8 +8415,8 @@ ContentEditableInput.prototype = copyObj({
            newBot.charCodeAt(newBot.length - cutEnd - 1) == oldBot.charCodeAt(oldBot.length - cutEnd - 1))
       { ++cutEnd }
 
-    newText[newText.length - 1] = newBot.slice(0, newBot.length - cutEnd)
-    newText[0] = newText[0].slice(cutFront)
+    newText[newText.length - 1] = newBot.slice(0, newBot.length - cutEnd).replace(/^\u200b+/, "")
+    newText[0] = newText[0].slice(cutFront).replace(/\u200b+$/, "")
 
     var chFrom = Pos(fromLine, cutFront)
     var chTo = Pos(toLine, oldText.length ? lst(oldText).length - cutEnd : 0)
@@ -8425,17 +8433,22 @@ ContentEditableInput.prototype = copyObj({
     this.forceCompositionEnd()
   },
   forceCompositionEnd: function() {
-    if (!this.composing || this.composing.handled) { return }
-    this.applyComposition(this.composing)
-    this.composing.handled = true
+    if (!this.composing) { return }
+    this.composing = null
+    if (!this.pollContent()) { regChange(this.cm) }
     this.div.blur()
     this.div.focus()
   },
-  applyComposition: function(composing) {
-    if (this.cm.isReadOnly())
-      { operation(this.cm, regChange)(this.cm) }
-    else if (composing.data && composing.data != composing.startData)
-      { operation(this.cm, applyTextInput)(this.cm, composing.data, 0, composing.sel) }
+  readFromDOMSoon: function() {
+    var this$1 = this;
+
+    if (this.readDOMTimeout != null) { return }
+    this.readDOMTimeout = setTimeout(function () {
+      this$1.readDOMTimeout = null
+      if (this$1.composing) { return }
+      if (this$1.cm.isReadOnly() || !this$1.pollContent())
+        { runInOp(this$1.cm, function () { return regChange(this$1.cm); }) }
+    }, 80)
   },
 
   setUneditable: function(node) {
@@ -8483,8 +8496,8 @@ function domTextBetween(cm, from, to, fromLine, toLine) {
     if (node.nodeType == 1) {
       var cmText = node.getAttribute("cm-text")
       if (cmText != null) {
-        if (cmText == "") { cmText = node.textContent.replace(/\u200b/g, "") }
-        text += cmText
+        if (cmText == "") { text += node.textContent.replace(/\u200b/g, "") }
+        else { text += cmText }
         return
       }
       var markerID = node.getAttribute("cm-marker"), range$$1
@@ -9089,7 +9102,7 @@ CodeMirror$1.fromTextArea = fromTextArea
 
 addLegacyProps(CodeMirror$1)
 
-CodeMirror$1.version = "5.20.2"
+CodeMirror$1.version = "5.21.0"
 
 return CodeMirror$1;
 
