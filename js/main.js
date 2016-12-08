@@ -212,11 +212,18 @@ E(document).ready(function () {
             local: searchData
         });
         
+        var limit;
+        if (E(window).width() <= 800) {
+            limit = 5;
+        } else {
+            limit = 10;
+        }
+        
         query.typeahead(null, {
             display: 'name',
             name: 'search',
             source: search,
-            limit: 5,
+            limit: limit,
             templates: {
                 empty: function () {
                     return '<div class="no-match">unable to match query</div>';
