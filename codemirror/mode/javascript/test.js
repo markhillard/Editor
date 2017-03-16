@@ -48,6 +48,12 @@
      "  [property sub]([def a], [def b]) {}",
      "};");
 
+  MT("class_async_method",
+     "[keyword class] [def Foo] {",
+     "  [property sayName1]() {}",
+     "  [keyword async] [property sayName2]() {}",
+     "}");
+
   MT("import",
      "[keyword function] [def foo]() {",
      "  [keyword import] [def $] [keyword from] [string 'jquery'];",
@@ -266,6 +272,22 @@
      "  [property prop1][operator ?]: [variable-3 string];",
      "  [property prop2][operator ?]: [variable-3 string];",
      "} [operator =] {};")
+
+  TS("typescript_double_extend",
+     "[keyword export] [keyword interface] [def UserAttributes] {",
+     "  [property id][operator ?]: [variable-3 number];",
+     "  [property createdAt][operator ?]: [variable-3 Date];",
+     "}",
+     "[keyword export] [keyword interface] [def UserInstance] [keyword extends] [variable-3 Sequelize].[variable-3 Instance][operator <][variable-3 UserAttributes][operator >], [variable-3 UserAttributes] {",
+     "  [property id]: [variable-3 number];",
+     "  [property createdAt]: [variable-3 Date];",
+     "}");
+
+  TS("typescript_index_signature",
+     "[keyword interface] [def A] {",
+     "  [[ [variable prop]: [variable-3 string] ]]: [variable-3 any];",
+     "  [property prop1]: [variable-3 any];",
+     "}");
 
   var jsonld_mode = CodeMirror.getMode(
     {indentUnit: 2},
