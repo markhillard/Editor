@@ -4,7 +4,7 @@ import { clipPos, Pos } from "../line/pos"
 import { collapsedSpanAtEnd, heightAtLine, lineIsHidden, visualLine } from "../line/spans"
 import { getLine, lineAtHeight, lineNo, updateLineHeight } from "../line/utils_line"
 import { bidiOther, getBidiPartAt, getOrder } from "../util/bidi"
-import { ie, ie_version } from "../util/browser"
+import { chrome, android, ie, ie_version } from "../util/browser"
 import { elt, removeChildren, range, removeChildrenAndAdd } from "../util/dom"
 import { e_target } from "../util/event"
 import { hasBadZoomedRects } from "../util/feature_detection"
@@ -281,8 +281,17 @@ export function clearCaches(cm) {
   cm.display.lineNumChars = null
 }
 
-function pageScrollX() { return window.pageXOffset || (document.documentElement || document.body).scrollLeft }
-function pageScrollY() { return window.pageYOffset || (document.documentElement || document.body).scrollTop }
+function pageScrollX() {
+  // Work around https://bugs.chromium.org/p/chromium/issues/detail?id=489206
+  // which causes page_Offset and bounding client rects to use
+  // different reference viewports and invalidate our calculations.
+  if (chrome && android) return -(document.body.getBoundingClientRect().left - parseInt(getComputedStyle(document.body).marginLeft))
+  return window.pageXOffset || (document.documentElement || document.body).scrollLeft
+}
+function pageScrollY() {
+  if (chrome && android) return -(document.body.getBoundingClientRect().top - parseInt(getComputedStyle(document.body).marginTop))
+  return window.pageYOffset || (document.documentElement || document.body).scrollTop
+}
 
 // Converts a {top, bottom, left, right} box from line-local
 // coordinates into another coordinate system. Context may be one of
@@ -356,7 +365,7 @@ export function cursorCoords(cm, pos, context, lineObj, preparedMeasure, varHeig
     if (right) m.left = m.right; else m.right = m.left
     return intoCoordSystem(cm, lineObj, m, context)
   }
-  let order = getOrder(lineObj), ch = pos.ch, sticky = pos.sticky
+  let order = getOrder(lineObj, cm.doc.direction), ch = pos.ch, sticky = pos.sticky
   if (ch >= lineObj.text.length) {
     ch = lineObj.text.length
     sticky = "before"
@@ -442,7 +451,7 @@ function coordsCharInner(cm, lineObj, lineNo, x, y) {
   let begin = 0, end = lineObj.text.length
   let preparedMeasure = prepareMeasureForLine(cm, lineObj)
   let pos
-  let order = getOrder(lineObj)
+  let order = getOrder(lineObj, cm.doc.direction)
   if (order) {
     if (cm.options.lineWrapping) {
       ;({begin, end} = wrappedLineExtent(cm, lineObj, preparedMeasure, y))

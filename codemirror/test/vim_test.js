@@ -1342,8 +1342,8 @@ testVim('Y', function(cm, vim, helpers) {
   helpers.doKeys('Y');
   eq(' word1\nword2\n word3', cm.getValue());
   var register = helpers.getRegisterController().getRegister();
-  eq('rd1', register.toString());
-  is(!register.linewise);
+  eq(' word1\n', register.toString());
+  is(register.linewise);
   helpers.assertCursorAt(0, 3);
 }, { value: ' word1\nword2\n word3' });
 testVim('~', function(cm, vim, helpers) {
@@ -1638,6 +1638,17 @@ testVim('mark', function(cm, vim, helpers) {
   cm.replaceRange('   h', cm.getCursor());
   cm.setCursor(0, 0);
   helpers.doKeys('\'', 't');
+  helpers.assertCursorAt(2, 3);
+});
+testVim('mark\'', function(cm, vim, helpers) {
+  cm.setCursor(2, 2);
+  cm.setCursor(0, 0);
+  helpers.doKeys('`', '\'');
+  helpers.assertCursorAt(2, 2);
+  cm.setCursor(2, 0);
+  cm.replaceRange('   h', cm.getCursor());
+  cm.setCursor(0, 0);
+  helpers.doKeys('\'', '\'');
   helpers.assertCursorAt(2, 3);
 });
 testVim('jumpToMark_next', function(cm, vim, helpers) {

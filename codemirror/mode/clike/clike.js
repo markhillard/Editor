@@ -64,7 +64,8 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       isPunctuationChar = parserConfig.isPunctuationChar || /[\[\]{}\(\),;\:\.]/,
       numberStart = parserConfig.numberStart || /[\d\.]/,
       number = parserConfig.number || /^(?:0x[a-f\d]+|0b[01]+|(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?)(u|ll?|l|f)?/i,
-      isOperatorChar = parserConfig.isOperatorChar || /[+\-*&%=<>!?|\/]/;
+      isOperatorChar = parserConfig.isOperatorChar || /[+\-*&%=<>!?|\/]/,
+      isIdentifierChar = parserConfig.isIdentifierChar || /[\w\$_\xa1-\uffff]/;
 
   var curPunc, isDefKeyword;
 
@@ -101,9 +102,9 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       while (!stream.match(/^\/[\/*]/, false) && stream.eat(isOperatorChar)) {}
       return "operator";
     }
-    stream.eatWhile(/[\w\$_\xa1-\uffff]/);
+    stream.eatWhile(isIdentifierChar);
     if (namespaceSeparator) while (stream.match(namespaceSeparator))
-      stream.eatWhile(/[\w\$_\xa1-\uffff]/);
+      stream.eatWhile(isIdentifierChar);
 
     var cur = stream.current();
     if (contains(keywords, cur)) {
@@ -314,7 +315,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
   }
 
   function cppLooksLikeConstructor(word) {
-    var lastTwo = /(\w+)::(\w+)$/.exec(word);
+    var lastTwo = /(\w+)::~?(\w+)$/.exec(word);
     return lastTwo && lastTwo[1] == lastTwo[2];
   }
 
@@ -390,6 +391,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
     typeFirstDefinitions: true,
     atoms: words("true false null"),
     dontIndentStatements: /^template$/,
+    isIdentifierChar: /[\w\$_~\xa1-\uffff]/,
     hooks: {
       "#": cppHook,
       "*": pointerHook,
@@ -575,7 +577,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       "file import where by get set abstract enum open inner override private public internal " +
       "protected catch finally out final vararg reified dynamic companion constructor init " +
       "sealed field property receiver param sparam lateinit data inline noinline tailrec " +
-      "external annotation crossinline const operator infix"
+      "external annotation crossinline const operator infix suspend"
     ),
     types: words(
       /* package java.lang */
@@ -587,6 +589,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
     intendSwitch: false,
     indentStatements: false,
     multiLineStrings: true,
+    number: /^(?:0x[a-f\d_]+|0b[01_]+|(?:[\d_]+\.?\d*|\.\d+)(?:e[-+]?[\d_]+)?)(u|ll?|l|f)?/i,
     blockKeywords: words("catch class do else finally for if where try while enum"),
     defKeywords: words("class val var object package interface fun"),
     atoms: words("true false null this"),

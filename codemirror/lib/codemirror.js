@@ -33,8 +33,9 @@ var mac_geMountainLion = /Mac OS X 1\d\D([8-9]|\d\d)\D/.test(userAgent)
 var phantom = /PhantomJS/.test(userAgent)
 
 var ios = !edge && /AppleWebKit/.test(userAgent) && /Mobile\/\w+/.test(userAgent)
+var android = /Android/.test(userAgent)
 // This is woefully incomplete. Suggestions for alternative methods welcome.
-var mobile = ios || /Android|webOS|BlackBerry|Opera Mini|Opera Mobi|IEMobile/i.test(userAgent)
+var mobile = ios || android || /webOS|BlackBerry|Opera Mini|Opera Mobi|IEMobile/i.test(userAgent)
 var mac = ios || /Mac/.test(platform)
 var chromeOS = /\bCrOS\b/.test(userAgent)
 var windows = /win/i.test(platform)
@@ -73,6 +74,12 @@ function elt(tag, content, className, style) {
   if (style) { e.style.cssText = style }
   if (typeof content == "string") { e.appendChild(document.createTextNode(content)) }
   else if (content) { for (var i = 0; i < content.length; ++i) { e.appendChild(content[i]) } }
+  return e
+}
+// wrapper for elt, which removes the elt from the accessibility tree
+function eltP(tag, content, className, style) {
+  var e = elt(tag, content, className, style)
+  e.setAttribute("role", "presentation")
   return e
 }
 
@@ -114,8 +121,8 @@ function activeElt() {
   } catch(e) {
     activeElement = document.body || null
   }
-  while (activeElement && activeElement.root && activeElement.root.activeElement)
-    { activeElement = activeElement.root.activeElement }
+  while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement)
+    { activeElement = activeElement.shadowRoot.activeElement }
   return activeElement
 }
 
@@ -297,7 +304,7 @@ function Display(place, doc, input) {
   d.gutterFiller = elt("div", null, "CodeMirror-gutter-filler")
   d.gutterFiller.setAttribute("cm-not-content", "true")
   // Will contain the actual code, positioned to cover the viewport.
-  d.lineDiv = elt("div", null, "CodeMirror-code")
+  d.lineDiv = eltP("div", null, "CodeMirror-code")
   // Elements are added to these to represent selection and cursors.
   d.selectionDiv = elt("div", null, null, "position: relative; z-index: 1")
   d.cursorDiv = elt("div", null, "CodeMirror-cursors")
@@ -306,10 +313,11 @@ function Display(place, doc, input) {
   // When lines outside of the viewport are measured, they are drawn in this.
   d.lineMeasure = elt("div", null, "CodeMirror-measure")
   // Wraps everything that needs to exist inside the vertically-padded coordinate system
-  d.lineSpace = elt("div", [d.measure, d.lineMeasure, d.selectionDiv, d.cursorDiv, d.lineDiv],
+  d.lineSpace = eltP("div", [d.measure, d.lineMeasure, d.selectionDiv, d.cursorDiv, d.lineDiv],
                     null, "position: relative; outline: none")
+  var lines = eltP("div", [d.lineSpace], "CodeMirror-lines")
   // Moved around its parent to cover visible view.
-  d.mover = elt("div", [elt("div", [d.lineSpace], "CodeMirror-lines")], null, "position: relative")
+  d.mover = elt("div", [lines], null, "position: relative")
   // Set to the height of the document, allowing scrolling.
   d.sizer = elt("div", [d.mover], "CodeMirror-sizer")
   d.sizerWidth = null
@@ -960,16 +968,16 @@ var bidiOrdering = (function() {
 
   var bidiRE = /[\u0590-\u05f4\u0600-\u06ff\u0700-\u08ac]/
   var isNeutral = /[stwN]/, isStrong = /[LRr]/, countsAsLeft = /[Lb1n]/, countsAsNum = /[1n]/
-  // Browsers seem to always treat the boundaries of block elements as being L.
-  var outerType = "L"
 
   function BidiSpan(level, from, to) {
     this.level = level
     this.from = from; this.to = to
   }
 
-  return function(str) {
-    if (!bidiRE.test(str)) { return false }
+  return function(str, direction) {
+    var outerType = direction == "ltr" ? "L" : "R"
+
+    if (str.length == 0 || direction == "ltr" && !bidiRE.test(str)) { return false }
     var len = str.length, types = []
     for (var i = 0; i < len; ++i)
       { types.push(charType(str.charCodeAt(i))) }
@@ -1043,7 +1051,7 @@ var bidiOrdering = (function() {
         for (end$1 = i$6 + 1; end$1 < len && isNeutral.test(types[end$1]); ++end$1) {}
         var before = (i$6 ? types[i$6-1] : outerType) == "L"
         var after = (end$1 < len ? types[end$1] : outerType) == "L"
-        var replace$1 = before || after ? "L" : "R"
+        var replace$1 = before == after ? (before ? "L" : "R") : outerType
         for (var j$1 = i$6; j$1 < end$1; ++j$1) { types[j$1] = replace$1 }
         i$6 = end$1 - 1
       }
@@ -1084,16 +1092,16 @@ var bidiOrdering = (function() {
       order.push(new BidiSpan(0, len - m[0].length, len))
     }
 
-    return order
+    return direction == "rtl" ? order.reverse() : order
   }
 })()
 
 // Get the bidi ordering for the given line (and cache it). Returns
 // false for lines that are fully left-to-right, and an array of
 // BidiSpan objects otherwise.
-function getOrder(line) {
+function getOrder(line, direction) {
   var order = line.order
-  if (order == null) { order = line.order = bidiOrdering(line.text) }
+  if (order == null) { order = line.order = bidiOrdering(line.text, direction) }
   return order
 }
 
@@ -1109,7 +1117,7 @@ function moveLogically(line, start, dir) {
 
 function endOfLine(visually, cm, lineObj, lineNo, dir) {
   if (visually) {
-    var order = getOrder(lineObj)
+    var order = getOrder(lineObj, cm.doc.direction)
     if (order) {
       var part = dir < 0 ? lst(order) : order[0]
       var moveInStorageOrder = (dir < 0) == (part.level == 1)
@@ -1135,7 +1143,7 @@ function endOfLine(visually, cm, lineObj, lineNo, dir) {
 }
 
 function moveVisually(cm, line, start, dir) {
-  var bidi = getOrder(line)
+  var bidi = getOrder(line, cm.doc.direction)
   if (!bidi) { return moveLogically(line, start, dir) }
   if (start.ch >= line.text.length) {
     start.ch = line.text.length
@@ -1145,8 +1153,8 @@ function moveVisually(cm, line, start, dir) {
     start.sticky = "after"
   }
   var partPos = getBidiPartAt(bidi, start.ch, start.sticky), part = bidi[partPos]
-  if (part.level % 2 == 0 && (dir > 0 ? part.to > start.ch : part.from < start.ch)) {
-    // Case 1: We move within an ltr part. Even with wrapped lines,
+  if (cm.doc.direction == "ltr" && part.level % 2 == 0 && (dir > 0 ? part.to > start.ch : part.from < start.ch)) {
+    // Case 1: We move within an ltr part in an ltr editor. Even with wrapped lines,
     // nothing interesting happens.
     return moveLogically(line, start, dir)
   }
@@ -1160,11 +1168,12 @@ function moveVisually(cm, line, start, dir) {
   }
   var wrappedLineExtent = getWrappedLineExtent(start.sticky == "before" ? mv(start, -1) : start.ch)
 
-  if (part.level % 2 == 1) {
-    var ch = mv(start, -dir)
-    if (ch != null && (dir > 0 ? ch >= part.from && ch >= wrappedLineExtent.begin : ch <= part.to && ch <= wrappedLineExtent.end)) {
-      // Case 2: We move within an rtl part on the same visual line
-      var sticky = dir < 0 ? "before" : "after"
+  if (cm.doc.direction == "rtl" || part.level == 1) {
+    var moveInStorageOrder = (part.level == 1) == (dir < 0)
+    var ch = mv(start, moveInStorageOrder ? 1 : -1)
+    if (ch != null && (!moveInStorageOrder ? ch >= part.from && ch >= wrappedLineExtent.begin : ch <= part.to && ch <= wrappedLineExtent.end)) {
+      // Case 2: We move within an rtl part or in an rtl editor on the same visual line
+      var sticky = moveInStorageOrder ? "before" : "after"
       return new Pos(start.line, ch, sticky)
     }
   }
@@ -1810,14 +1819,11 @@ function buildLineContent(cm, lineView) {
   // The padding-right forces the element to have a 'border', which
   // is needed on Webkit to be able to get line-level bounding
   // rectangles for it (in measureChar).
-  var content = elt("span", null, null, webkit ? "padding-right: .1px" : null)
-  var builder = {pre: elt("pre", [content], "CodeMirror-line"), content: content,
+  var content = eltP("span", null, null, webkit ? "padding-right: .1px" : null)
+  var builder = {pre: eltP("pre", [content], "CodeMirror-line"), content: content,
                  col: 0, pos: 0, cm: cm,
                  trailingSpace: false,
                  splitSpaces: (ie || webkit) && cm.getOption("lineWrapping")}
-  // hide from accessibility tree
-  content.setAttribute("role", "presentation")
-  builder.pre.setAttribute("role", "presentation")
   lineView.measure = {}
 
   // Iterate over the logical lines that make up this visual line.
@@ -1827,7 +1833,7 @@ function buildLineContent(cm, lineView) {
     builder.addToken = buildToken
     // Optionally wire in some hacks into the token-rendering
     // algorithm, to deal with browser quirks.
-    if (hasBadBidiRects(cm.display.measure) && (order = getOrder(line)))
+    if (hasBadBidiRects(cm.display.measure) && (order = getOrder(line, cm.doc.direction)))
       { builder.addToken = buildTokenBadBidi(builder.addToken, order) }
     builder.map = []
     var allowFrontierUpdate = lineView != cm.display.externalMeasured && lineNo(line)
@@ -2168,7 +2174,7 @@ function updateLineForChanges(cm, lineView, lineN, dims) {
     var type = lineView.changes[j]
     if (type == "text") { updateLineText(cm, lineView) }
     else if (type == "gutter") { updateLineGutter(cm, lineView, lineN, dims) }
-    else if (type == "class") { updateLineClasses(lineView) }
+    else if (type == "class") { updateLineClasses(cm, lineView) }
     else if (type == "widget") { updateLineWidgets(cm, lineView, dims) }
   }
   lineView.changes = null
@@ -2187,7 +2193,7 @@ function ensureLineWrapped(lineView) {
   return lineView.node
 }
 
-function updateLineBackground(lineView) {
+function updateLineBackground(cm, lineView) {
   var cls = lineView.bgClass ? lineView.bgClass + " " + (lineView.line.bgClass || "") : lineView.line.bgClass
   if (cls) { cls += " CodeMirror-linebackground" }
   if (lineView.background) {
@@ -2196,6 +2202,7 @@ function updateLineBackground(lineView) {
   } else if (cls) {
     var wrap = ensureLineWrapped(lineView)
     lineView.background = wrap.insertBefore(elt("div", null, cls), wrap.firstChild)
+    cm.display.input.setUneditable(lineView.background)
   }
 }
 
@@ -2223,14 +2230,14 @@ function updateLineText(cm, lineView) {
   if (built.bgClass != lineView.bgClass || built.textClass != lineView.textClass) {
     lineView.bgClass = built.bgClass
     lineView.textClass = built.textClass
-    updateLineClasses(lineView)
+    updateLineClasses(cm, lineView)
   } else if (cls) {
     lineView.text.className = cls
   }
 }
 
-function updateLineClasses(lineView) {
-  updateLineBackground(lineView)
+function updateLineClasses(cm, lineView) {
+  updateLineBackground(cm, lineView)
   if (lineView.line.wrapClass)
     { ensureLineWrapped(lineView).className = lineView.line.wrapClass }
   else if (lineView.node != lineView.text)
@@ -2252,6 +2259,7 @@ function updateLineGutter(cm, lineView, lineN, dims) {
     var wrap = ensureLineWrapped(lineView)
     lineView.gutterBackground = elt("div", null, "CodeMirror-gutter-background " + lineView.line.gutterClass,
                                     ("left: " + (cm.options.fixedGutter ? dims.fixedPos : -dims.gutterTotalWidth) + "px; width: " + (dims.gutterTotalWidth) + "px"))
+    cm.display.input.setUneditable(lineView.gutterBackground)
     wrap.insertBefore(lineView.gutterBackground, lineView.text)
   }
   var markers = lineView.line.gutterMarkers
@@ -2293,7 +2301,7 @@ function buildLineElement(cm, lineView, lineN, dims) {
   if (built.bgClass) { lineView.bgClass = built.bgClass }
   if (built.textClass) { lineView.textClass = built.textClass }
 
-  updateLineClasses(lineView)
+  updateLineClasses(cm, lineView)
   updateLineGutter(cm, lineView, lineN, dims)
   insertLineWidgets(cm, lineView, dims)
   return lineView.node
@@ -2633,8 +2641,17 @@ function clearCaches(cm) {
   cm.display.lineNumChars = null
 }
 
-function pageScrollX() { return window.pageXOffset || (document.documentElement || document.body).scrollLeft }
-function pageScrollY() { return window.pageYOffset || (document.documentElement || document.body).scrollTop }
+function pageScrollX() {
+  // Work around https://bugs.chromium.org/p/chromium/issues/detail?id=489206
+  // which causes page_Offset and bounding client rects to use
+  // different reference viewports and invalidate our calculations.
+  if (chrome && android) { return -(document.body.getBoundingClientRect().left - parseInt(getComputedStyle(document.body).marginLeft)) }
+  return window.pageXOffset || (document.documentElement || document.body).scrollLeft
+}
+function pageScrollY() {
+  if (chrome && android) { return -(document.body.getBoundingClientRect().top - parseInt(getComputedStyle(document.body).marginTop)) }
+  return window.pageYOffset || (document.documentElement || document.body).scrollTop
+}
 
 // Converts a {top, bottom, left, right} box from line-local
 // coordinates into another coordinate system. Context may be one of
@@ -2708,7 +2725,7 @@ function cursorCoords(cm, pos, context, lineObj, preparedMeasure, varHeight) {
     if (right) { m.left = m.right; } else { m.right = m.left }
     return intoCoordSystem(cm, lineObj, m, context)
   }
-  var order = getOrder(lineObj), ch = pos.ch, sticky = pos.sticky
+  var order = getOrder(lineObj, cm.doc.direction), ch = pos.ch, sticky = pos.sticky
   if (ch >= lineObj.text.length) {
     ch = lineObj.text.length
     sticky = "before"
@@ -2794,7 +2811,7 @@ function coordsCharInner(cm, lineObj, lineNo, x, y) {
   var begin = 0, end = lineObj.text.length
   var preparedMeasure = prepareMeasureForLine(cm, lineObj)
   var pos
-  var order = getOrder(lineObj)
+  var order = getOrder(lineObj, cm.doc.direction)
   if (order) {
     if (cm.options.lineWrapping) {
       ;var assign;
@@ -3021,7 +3038,7 @@ function drawSelectionRange(cm, range, output) {
       return charCoords(cm, Pos(line, ch), "div", lineObj, bias)
     }
 
-    iterateBidiSections(getOrder(lineObj), fromArg || 0, toArg == null ? lineLen : toArg, function (from, to, dir) {
+    iterateBidiSections(getOrder(lineObj, doc.direction), fromArg || 0, toArg == null ? lineLen : toArg, function (from, to, dir) {
       var leftPos = coords(from, "left"), rightPos, left, right
       if (from == to) {
         rightPos = leftPos
@@ -3440,12 +3457,12 @@ NativeScrollbars.prototype.update = function (measure) {
 
 NativeScrollbars.prototype.setScrollLeft = function (pos) {
   if (this.horiz.scrollLeft != pos) { this.horiz.scrollLeft = pos }
-  if (this.disableHoriz) { this.enableZeroWidthBar(this.horiz, this.disableHoriz) }
+  if (this.disableHoriz) { this.enableZeroWidthBar(this.horiz, this.disableHoriz, "horiz") }
 };
 
 NativeScrollbars.prototype.setScrollTop = function (pos) {
   if (this.vert.scrollTop != pos) { this.vert.scrollTop = pos }
-  if (this.disableVert) { this.enableZeroWidthBar(this.vert, this.disableVert) }
+  if (this.disableVert) { this.enableZeroWidthBar(this.vert, this.disableVert, "vert") }
 };
 
 NativeScrollbars.prototype.zeroWidthHack = function () {
@@ -3456,17 +3473,18 @@ NativeScrollbars.prototype.zeroWidthHack = function () {
   this.disableVert = new Delayed
 };
 
-NativeScrollbars.prototype.enableZeroWidthBar = function (bar, delay) {
+NativeScrollbars.prototype.enableZeroWidthBar = function (bar, delay, type) {
   bar.style.pointerEvents = "auto"
   function maybeDisable() {
     // To find out whether the scrollbar is still visible, we
     // check whether the element under the pixel in the bottom
-    // left corner of the scrollbar box is the scrollbar box
+    // right corner of the scrollbar box is the scrollbar box
     // itself (when the bar is still visible) or its filler child
     // (when the bar is hidden). If it is still visible, we keep
     // it enabled, if it's hidden, we disable pointer events.
     var box = bar.getBoundingClientRect()
-    var elt = document.elementFromPoint(box.left + 1, box.bottom - 1)
+    var elt = type == "vert" ? document.elementFromPoint(box.right - 1, (box.top + box.bottom) / 2)
+        : document.elementFromPoint((box.right + box.left) / 2, box.bottom - 1)
     if (elt != bar) { bar.style.pointerEvents = "none" }
     else { delay.set(1000, maybeDisable) }
   }
@@ -3548,14 +3566,14 @@ function initScrollbars(cm) {
 
 // If an editor sits on the top or bottom of the window, partially
 // scrolled out of view, this ensures that the cursor is visible.
-function maybeScrollWindow(cm, coords) {
+function maybeScrollWindow(cm, rect) {
   if (signalDOMEvent(cm, "scrollCursorIntoView")) { return }
 
   var display = cm.display, box = display.sizer.getBoundingClientRect(), doScroll = null
-  if (coords.top + box.top < 0) { doScroll = true }
-  else if (coords.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) { doScroll = false }
+  if (rect.top + box.top < 0) { doScroll = true }
+  else if (rect.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) { doScroll = false }
   if (doScroll != null && !phantom) {
-    var scrollNode = elt("div", "\u200b", null, ("position: absolute;\n                         top: " + (coords.top - display.viewOffset - paddingTop(cm.display)) + "px;\n                         height: " + (coords.bottom - coords.top + scrollGap(cm) + display.barHeight) + "px;\n                         left: " + (coords.left) + "px; width: 2px;"))
+    var scrollNode = elt("div", "\u200b", null, ("position: absolute;\n                         top: " + (rect.top - display.viewOffset - paddingTop(cm.display)) + "px;\n                         height: " + (rect.bottom - rect.top + scrollGap(cm) + display.barHeight) + "px;\n                         left: " + (rect.left) + "px; width: " + (Math.max(2, rect.right - rect.left)) + "px;"))
     cm.display.lineSpace.appendChild(scrollNode)
     scrollNode.scrollIntoView(doScroll)
     cm.display.lineSpace.removeChild(scrollNode)
@@ -3567,15 +3585,16 @@ function maybeScrollWindow(cm, coords) {
 // measured, the position of something may 'drift' during drawing).
 function scrollPosIntoView(cm, pos, end, margin) {
   if (margin == null) { margin = 0 }
-  var coords
+  var rect
   for (var limit = 0; limit < 5; limit++) {
     var changed = false
-    coords = cursorCoords(cm, pos)
+    var coords = cursorCoords(cm, pos)
     var endCoords = !end || end == pos ? coords : cursorCoords(cm, end)
-    var scrollPos = calculateScrollPos(cm, Math.min(coords.left, endCoords.left),
-                                       Math.min(coords.top, endCoords.top) - margin,
-                                       Math.max(coords.left, endCoords.left),
-                                       Math.max(coords.bottom, endCoords.bottom) + margin)
+    rect = {left: Math.min(coords.left, endCoords.left),
+            top: Math.min(coords.top, endCoords.top) - margin,
+            right: Math.max(coords.left, endCoords.left),
+            bottom: Math.max(coords.bottom, endCoords.bottom) + margin}
+    var scrollPos = calculateScrollPos(cm, rect)
     var startTop = cm.doc.scrollTop, startLeft = cm.doc.scrollLeft
     if (scrollPos.scrollTop != null) {
       setScrollTop(cm, scrollPos.scrollTop)
@@ -3587,12 +3606,12 @@ function scrollPosIntoView(cm, pos, end, margin) {
     }
     if (!changed) { break }
   }
-  return coords
+  return rect
 }
 
 // Scroll a given set of coordinates into view (immediately).
-function scrollIntoView(cm, x1, y1, x2, y2) {
-  var scrollPos = calculateScrollPos(cm, x1, y1, x2, y2)
+function scrollIntoView(cm, rect) {
+  var scrollPos = calculateScrollPos(cm, rect)
   if (scrollPos.scrollTop != null) { setScrollTop(cm, scrollPos.scrollTop) }
   if (scrollPos.scrollLeft != null) { setScrollLeft(cm, scrollPos.scrollLeft) }
 }
@@ -3601,31 +3620,31 @@ function scrollIntoView(cm, x1, y1, x2, y2) {
 // rectangle into view. Returns an object with scrollTop and
 // scrollLeft properties. When these are undefined, the
 // vertical/horizontal position does not need to be adjusted.
-function calculateScrollPos(cm, x1, y1, x2, y2) {
+function calculateScrollPos(cm, rect) {
   var display = cm.display, snapMargin = textHeight(cm.display)
-  if (y1 < 0) { y1 = 0 }
+  if (rect.top < 0) { rect.top = 0 }
   var screentop = cm.curOp && cm.curOp.scrollTop != null ? cm.curOp.scrollTop : display.scroller.scrollTop
   var screen = displayHeight(cm), result = {}
-  if (y2 - y1 > screen) { y2 = y1 + screen }
+  if (rect.bottom - rect.top > screen) { rect.bottom = rect.top + screen }
   var docBottom = cm.doc.height + paddingVert(display)
-  var atTop = y1 < snapMargin, atBottom = y2 > docBottom - snapMargin
-  if (y1 < screentop) {
-    result.scrollTop = atTop ? 0 : y1
-  } else if (y2 > screentop + screen) {
-    var newTop = Math.min(y1, (atBottom ? docBottom : y2) - screen)
+  var atTop = rect.top < snapMargin, atBottom = rect.bottom > docBottom - snapMargin
+  if (rect.top < screentop) {
+    result.scrollTop = atTop ? 0 : rect.top
+  } else if (rect.bottom > screentop + screen) {
+    var newTop = Math.min(rect.top, (atBottom ? docBottom : rect.bottom) - screen)
     if (newTop != screentop) { result.scrollTop = newTop }
   }
 
   var screenleft = cm.curOp && cm.curOp.scrollLeft != null ? cm.curOp.scrollLeft : display.scroller.scrollLeft
   var screenw = displayWidth(cm) - (cm.options.fixedGutter ? display.gutters.offsetWidth : 0)
-  var tooWide = x2 - x1 > screenw
-  if (tooWide) { x2 = x1 + screenw }
-  if (x1 < 10)
+  var tooWide = rect.right - rect.left > screenw
+  if (tooWide) { rect.right = rect.left + screenw }
+  if (rect.left < 10)
     { result.scrollLeft = 0 }
-  else if (x1 < screenleft)
-    { result.scrollLeft = Math.max(0, x1 - (tooWide ? 0 : 10)) }
-  else if (x2 > screenw + screenleft - 3)
-    { result.scrollLeft = x2 + (tooWide ? 0 : 10) - screenw }
+  else if (rect.left < screenleft)
+    { result.scrollLeft = Math.max(0, rect.left - (tooWide ? 0 : 10)) }
+  else if (rect.right > screenw + screenleft - 3)
+    { result.scrollLeft = rect.right + (tooWide ? 0 : 10) - screenw }
   return result
 }
 
@@ -3648,7 +3667,7 @@ function ensureCursorVisible(cm) {
     from = cur.ch ? Pos(cur.line, cur.ch - 1) : cur
     to = Pos(cur.line, cur.ch + 1)
   }
-  cm.curOp.scrollToPos = {from: from, to: to, margin: cm.options.cursorScrollMargin, isCursor: true}
+  cm.curOp.scrollToPos = {from: from, to: to, margin: cm.options.cursorScrollMargin}
 }
 
 // When an operation has its scrollToPos property set, and another
@@ -3660,10 +3679,12 @@ function resolveScrollToPos(cm) {
   if (range) {
     cm.curOp.scrollToPos = null
     var from = estimateCoords(cm, range.from), to = estimateCoords(cm, range.to)
-    var sPos = calculateScrollPos(cm, Math.min(from.left, to.left),
-                                  Math.min(from.top, to.top) - range.margin,
-                                  Math.max(from.right, to.right),
-                                  Math.max(from.bottom, to.bottom) + range.margin)
+    var sPos = calculateScrollPos(cm, {
+      left: Math.min(from.left, to.left),
+      top: Math.min(from.top, to.top) - range.margin,
+      right: Math.max(from.right, to.right),
+      bottom: Math.max(from.bottom, to.bottom) + range.margin
+    })
     cm.scrollTo(sPos.scrollLeft, sPos.scrollTop)
   }
 }
@@ -3809,9 +3830,9 @@ function endOperation_finish(op) {
   }
   // If we need to scroll a specific position into view, do so.
   if (op.scrollToPos) {
-    var coords = scrollPosIntoView(cm, clipPos(doc, op.scrollToPos.from),
-                                   clipPos(doc, op.scrollToPos.to), op.scrollToPos.margin)
-    if (op.scrollToPos.isCursor && cm.state.focused) { maybeScrollWindow(cm, coords) }
+    var rect = scrollPosIntoView(cm, clipPos(doc, op.scrollToPos.from),
+                                 clipPos(doc, op.scrollToPos.to), op.scrollToPos.margin)
+    maybeScrollWindow(cm, rect)
   }
 
   // Fire events for markers that are hidden/unidden by editing or
@@ -4547,9 +4568,21 @@ function attachDoc(cm, doc) {
   doc.cm = cm
   estimateLineHeights(cm)
   loadMode(cm)
+  setDirectionClass(cm)
   if (!cm.options.lineWrapping) { findMaxLine(cm) }
   cm.options.mode = doc.modeOption
   regChange(cm)
+}
+
+function setDirectionClass(cm) {
+  ;(cm.doc.direction == "rtl" ? addClass : rmClass)(cm.display.lineDiv, "CodeMirror-rtl")
+}
+
+function directionChanged(cm) {
+  runInOp(cm, function () {
+    setDirectionClass(cm)
+    regChange(cm)
+  })
 }
 
 function History(startGen) {
@@ -5695,8 +5728,7 @@ function markText(doc, from, to, options, type) {
   if (marker.replacedWith) {
     // Showing up as a widget implies collapsed (widget replaces text)
     marker.collapsed = true
-    marker.widgetNode = elt("span", [marker.replacedWith], "CodeMirror-widget")
-    marker.widgetNode.setAttribute("role", "presentation") // hide from accessibility tree
+    marker.widgetNode = eltP("span", [marker.replacedWith], "CodeMirror-widget")
     if (!options.handleMouseEvents) { marker.widgetNode.setAttribute("cm-ignore-events", "true") }
     if (options.insertLeft) { marker.widgetNode.insertLeft = true }
   }
@@ -5826,8 +5858,8 @@ function detachSharedMarkers(markers) {
 }
 
 var nextDocId = 0
-var Doc = function(text, mode, firstLine, lineSep) {
-  if (!(this instanceof Doc)) { return new Doc(text, mode, firstLine, lineSep) }
+var Doc = function(text, mode, firstLine, lineSep, direction) {
+  if (!(this instanceof Doc)) { return new Doc(text, mode, firstLine, lineSep, direction) }
   if (firstLine == null) { firstLine = 0 }
 
   BranchChunk.call(this, [new LeafChunk([new Line("", null)])])
@@ -5842,6 +5874,7 @@ var Doc = function(text, mode, firstLine, lineSep) {
   this.id = ++nextDocId
   this.modeOption = mode
   this.lineSep = lineSep
+  this.direction = (direction == "rtl") ? "rtl" : "ltr"
   this.extend = false
 
   if (typeof text == "string") { text = this.splitLines(text) }
@@ -5880,7 +5913,8 @@ Doc.prototype = createObj(BranchChunk.prototype, {
     var top = Pos(this.first, 0), last = this.first + this.size - 1
     makeChange(this, {from: top, to: Pos(last, getLine(this, last).text.length),
                       text: this.splitLines(code), origin: "setValue", full: true}, true)
-    setSelection(this, simpleSelection(top))
+    if (this.cm) { this.cm.scrollTo(0, 0) }
+    setSelection(this, simpleSelection(top), sel_dontScroll)
   }),
   replaceRange: function(code, from, to, origin) {
     from = clipPos(this, from)
@@ -6178,7 +6212,7 @@ Doc.prototype = createObj(BranchChunk.prototype, {
 
   copy: function(copyHistory) {
     var doc = new Doc(getLines(this, this.first, this.first + this.size),
-                      this.modeOption, this.first, this.lineSep)
+                      this.modeOption, this.first, this.lineSep, this.direction)
     doc.scrollTop = this.scrollTop; doc.scrollLeft = this.scrollLeft
     doc.sel = this.sel
     doc.extend = false
@@ -6194,7 +6228,7 @@ Doc.prototype = createObj(BranchChunk.prototype, {
     var from = this.first, to = this.first + this.size
     if (options.from != null && options.from > from) { from = options.from }
     if (options.to != null && options.to < to) { to = options.to }
-    var copy = new Doc(getLines(this, from, to), options.mode || this.modeOption, from, this.lineSep)
+    var copy = new Doc(getLines(this, from, to), options.mode || this.modeOption, from, this.lineSep, this.direction)
     if (options.sharedHist) { copy.history = this.history
     ; }(this.linked || (this.linked = [])).push({doc: copy, sharedHist: options.sharedHist})
     copy.linked = [{doc: this, isParent: true, sharedHist: options.sharedHist}]
@@ -6231,7 +6265,15 @@ Doc.prototype = createObj(BranchChunk.prototype, {
     if (this.lineSep) { return str.split(this.lineSep) }
     return splitLinesAuto(str)
   },
-  lineSeparator: function() { return this.lineSep || "\n" }
+  lineSeparator: function() { return this.lineSep || "\n" },
+
+  setDirection: docMethodOp(function (dir) {
+    if (dir != "rtl") { dir = "ltr" }
+    if (dir == this.direction) { return }
+    this.direction = dir
+    this.iter(function (line) { return line.order = null; })
+    if (this.cm) { directionChanged(this.cm) }
+  })
 })
 
 // Public alias.
@@ -6722,7 +6764,7 @@ function lineEnd(cm, lineN) {
 function lineStartSmart(cm, pos) {
   var start = lineStart(cm, pos.line)
   var line = getLine(cm.doc, start.line)
-  var order = getOrder(line)
+  var order = getOrder(line, cm.doc.direction)
   if (!order || order[0].level == 0) {
     var firstNonWS = Math.max(0, line.text.search(/\S/))
     var inWS = pos.line == start.line && pos.ch <= firstNonWS && pos.ch
@@ -6949,15 +6991,17 @@ function leftButtonDown(cm, e, start) {
 // Start a text drag. When it ends, see if any dragging actually
 // happen, and treat as a click if it didn't.
 function leftButtonStartDrag(cm, e, start, modifier) {
-  var display = cm.display, startTime = +new Date
-  var dragEnd = operation(cm, function (e2) {
+  var display = cm.display, moved = false
+  var dragEnd = operation(cm, function (e) {
     if (webkit) { display.scroller.draggable = false }
     cm.state.draggingText = false
     off(document, "mouseup", dragEnd)
+    off(document, "mousemove", mouseMove)
+    off(display.scroller, "dragstart", dragStart)
     off(display.scroller, "drop", dragEnd)
-    if (Math.abs(e.clientX - e2.clientX) + Math.abs(e.clientY - e2.clientY) < 10) {
-      e_preventDefault(e2)
-      if (!modifier && +new Date - 200 < startTime)
+    if (!moved) {
+      e_preventDefault(e)
+      if (!modifier)
         { extendSelection(cm.doc, start) }
       // Work around unexplainable focus problem in IE9 (#2127) and Chrome (#3081)
       if (webkit || ie && ie_version == 9)
@@ -6966,6 +7010,10 @@ function leftButtonStartDrag(cm, e, start, modifier) {
         { display.input.focus() }
     }
   })
+  var mouseMove = function(e2) {
+    moved = moved || Math.abs(e.clientX - e2.clientX) + Math.abs(e.clientY - e2.clientY) >= 10
+  }
+  var dragStart = function () { return moved = true; }
   // Let the drag handler handle this.
   if (webkit) { display.scroller.draggable = true }
   cm.state.draggingText = dragEnd
@@ -6973,7 +7021,12 @@ function leftButtonStartDrag(cm, e, start, modifier) {
   // IE's approach to draggable
   if (display.scroller.dragDrop) { display.scroller.dragDrop() }
   on(document, "mouseup", dragEnd)
+  on(document, "mousemove", mouseMove)
+  on(display.scroller, "dragstart", dragStart)
   on(display.scroller, "drop", dragEnd)
+
+  delayBlurEvent(cm)
+  setTimeout(function () { return display.input.focus(); }, 20)
 }
 
 // Normal selection, as opposed to text dragging.
@@ -7226,7 +7279,7 @@ function defineOptions(CodeMirror) {
     for (var i = newBreaks.length - 1; i >= 0; i--)
       { replaceRange(cm.doc, val, newBreaks[i], Pos(newBreaks[i].line, newBreaks[i].ch + val.length)) }
   })
-  option("specialChars", /[\u0000-\u001f\u007f\u00ad\u061c\u200b-\u200f\u2028\u2029\ufeff]/g, function (cm, val, old) {
+  option("specialChars", /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028\u2029\ufeff]/g, function (cm, val, old) {
     cm.state.specialChars = new RegExp(val.source + (val.test("\t") ? "" : "|\t"), "g")
     if (old != Init) { cm.refresh() }
   })
@@ -7311,6 +7364,7 @@ function defineOptions(CodeMirror) {
 
   option("tabindex", null, function (cm, val) { return cm.display.input.getField().tabIndex = val || ""; })
   option("autofocus", null)
+  option("direction", "ltr", function (cm, val) { return cm.doc.setDirection(val); }, true)
 }
 
 function guttersChanged(cm) {
@@ -7361,7 +7415,7 @@ function CodeMirror(place, options) {
   setGuttersForLineNumbers(options)
 
   var doc = options.value
-  if (typeof doc == "string") { doc = new Doc(doc, options.mode, null, options.lineSeparator) }
+  if (typeof doc == "string") { doc = new Doc(doc, options.mode, null, options.lineSeparator, options.direction) }
   this.doc = doc
 
   var input = new CodeMirror.inputStyles[options.inputStyle](this)
@@ -7959,7 +8013,7 @@ function addEditorMethods(CodeMirror) {
         node.style.left = left + "px"
       }
       if (scroll)
-        { scrollIntoView(this, left, top, left + node.offsetWidth, top + node.offsetHeight) }
+        { scrollIntoView(this, {left: left, top: top, right: left + node.offsetWidth, bottom: top + node.offsetHeight}) }
     },
 
     triggerOnKeyDown: methodOp(onKeyDown),
@@ -8103,10 +8157,12 @@ function addEditorMethods(CodeMirror) {
         resolveScrollToPos(this)
         this.curOp.scrollToPos = range
       } else {
-        var sPos = calculateScrollPos(this, Math.min(range.from.left, range.to.left),
-                                      Math.min(range.from.top, range.to.top) - range.margin,
-                                      Math.max(range.from.right, range.to.right),
-                                      Math.max(range.from.bottom, range.to.bottom) + range.margin)
+        var sPos = calculateScrollPos(this, {
+          left: Math.min(range.from.left, range.to.left),
+          top: Math.min(range.from.top, range.to.top) - range.margin,
+          right: Math.max(range.from.right, range.to.right),
+          bottom: Math.max(range.from.bottom, range.to.bottom) + range.margin
+        })
         this.scrollTo(sPos.scrollLeft, sPos.scrollTop)
       }
     }),
@@ -8281,9 +8337,7 @@ ContentEditableInput.prototype.init = function (display) {
   on(div, "paste", function (e) {
     if (signalDOMEvent(cm, e) || handlePaste(e, cm)) { return }
     // IE doesn't fire input events, so we schedule a read for the pasted content in this way
-    if (ie_version <= 11) { setTimeout(operation(cm, function () {
-      if (!input.pollContent()) { regChange(cm) }
-    }), 20) }
+    if (ie_version <= 11) { setTimeout(operation(cm, function () { return this$1.updateFromDOM(); }), 20) }
   })
 
   on(div, "compositionstart", function (e) {
@@ -8361,33 +8415,41 @@ ContentEditableInput.prototype.showSelection = function (info, takeFocus) {
 };
 
 ContentEditableInput.prototype.showPrimarySelection = function () {
-  var sel = window.getSelection(), prim = this.cm.doc.sel.primary()
-  var curAnchor = domToPos(this.cm, sel.anchorNode, sel.anchorOffset)
-  var curFocus = domToPos(this.cm, sel.focusNode, sel.focusOffset)
+  var sel = window.getSelection(), cm = this.cm, prim = cm.doc.sel.primary()
+  var from = prim.from(), to = prim.to()
+
+  if (cm.display.viewTo == cm.display.viewFrom || from.line >= cm.display.viewTo || to.line < cm.display.viewFrom) {
+    sel.removeAllRanges()
+    return
+  }
+
+  var curAnchor = domToPos(cm, sel.anchorNode, sel.anchorOffset)
+  var curFocus = domToPos(cm, sel.focusNode, sel.focusOffset)
   if (curAnchor && !curAnchor.bad && curFocus && !curFocus.bad &&
-      cmp(minPos(curAnchor, curFocus), prim.from()) == 0 &&
-      cmp(maxPos(curAnchor, curFocus), prim.to()) == 0)
+      cmp(minPos(curAnchor, curFocus), from) == 0 &&
+      cmp(maxPos(curAnchor, curFocus), to) == 0)
     { return }
 
-  var start = posToDOM(this.cm, prim.from())
-  var end = posToDOM(this.cm, prim.to())
-  if (!start && !end) { return }
-
-  var view = this.cm.display.view
-  var old = sel.rangeCount && sel.getRangeAt(0)
-  if (!start) {
-    start = {node: view[0].measure.map[2], offset: 0}
-  } else if (!end) { // FIXME dangerously hacky
+  var view = cm.display.view
+  var start = (from.line >= cm.display.viewFrom && posToDOM(cm, from)) ||
+      {node: view[0].measure.map[2], offset: 0}
+  var end = to.line < cm.display.viewTo && posToDOM(cm, to)
+  if (!end) {
     var measure = view[view.length - 1].measure
     var map = measure.maps ? measure.maps[measure.maps.length - 1] : measure.map
     end = {node: map[map.length - 1], offset: map[map.length - 2] - map[map.length - 3]}
   }
 
-  var rng
+  if (!start || !end) {
+    sel.removeAllRanges()
+    return
+  }
+
+  var old = sel.rangeCount && sel.getRangeAt(0), rng
   try { rng = range(start.node, start.offset, end.offset, end.node) }
   catch(e) {} // Our model of the DOM might be outdated, in which case the range we try to set can be impossible
   if (rng) {
-    if (!gecko && this.cm.state.focused) {
+    if (!gecko && cm.state.focused) {
       sel.collapse(start.node, start.offset)
       if (!rng.collapsed) {
         sel.removeAllRanges()
@@ -8467,16 +8529,28 @@ ContentEditableInput.prototype.selectionChanged = function () {
 };
 
 ContentEditableInput.prototype.pollSelection = function () {
-  if (!this.composing && this.readDOMTimeout == null && !this.gracePeriod && this.selectionChanged()) {
-    var sel = window.getSelection(), cm = this.cm
-    this.rememberSelection()
-    var anchor = domToPos(cm, sel.anchorNode, sel.anchorOffset)
-    var head = domToPos(cm, sel.focusNode, sel.focusOffset)
-    if (anchor && head) { runInOp(cm, function () {
-      setSelection(cm.doc, simpleSelection(anchor, head), sel_dontScroll)
-      if (anchor.bad || head.bad) { cm.curOp.selectionChanged = true }
-    }) }
+  if (this.readDOMTimeout != null || this.gracePeriod || !this.selectionChanged()) { return }
+  var sel = window.getSelection(), cm = this.cm
+  // On Android Chrome (version 56, at least), backspacing into an
+  // uneditable block element will put the cursor in that element,
+  // and then, because it's not editable, hide the virtual keyboard.
+  // Because Android doesn't allow us to actually detect backspace
+  // presses in a sane way, this code checks for when that happens
+  // and simulates a backspace press in this case.
+  if (android && chrome && this.cm.options.gutters.length && isInGutter(sel.anchorNode)) {
+    this.cm.triggerOnKeyDown({type: "keydown", keyCode: 8, preventDefault: Math.abs})
+    this.blur()
+    this.focus()
+    return
   }
+  if (this.composing) { return }
+  this.rememberSelection()
+  var anchor = domToPos(cm, sel.anchorNode, sel.anchorOffset)
+  var head = domToPos(cm, sel.focusNode, sel.focusOffset)
+  if (anchor && head) { runInOp(cm, function () {
+    setSelection(cm.doc, simpleSelection(anchor, head), sel_dontScroll)
+    if (anchor.bad || head.bad) { cm.curOp.selectionChanged = true }
+  }) }
 };
 
 ContentEditableInput.prototype.pollContent = function () {
@@ -8530,6 +8604,14 @@ ContentEditableInput.prototype.pollContent = function () {
   while (cutEnd < maxCutEnd &&
          newBot.charCodeAt(newBot.length - cutEnd - 1) == oldBot.charCodeAt(oldBot.length - cutEnd - 1))
     { ++cutEnd }
+  // Try to move start of change to start of selection if ambiguous
+  if (newText.length == 1 && oldText.length == 1 && fromLine == from.line) {
+    while (cutFront && cutFront > from.ch &&
+           newBot.charCodeAt(newBot.length - cutEnd - 1) == oldBot.charCodeAt(oldBot.length - cutEnd - 1)) {
+      cutFront--
+      cutEnd++
+    }
+  }
 
   newText[newText.length - 1] = newBot.slice(0, newBot.length - cutEnd).replace(/^\u200b+/, "")
   newText[0] = newText[0].slice(cutFront).replace(/\u200b+$/, "")
@@ -8552,7 +8634,7 @@ ContentEditableInput.prototype.forceCompositionEnd = function () {
   if (!this.composing) { return }
   clearTimeout(this.readDOMTimeout)
   this.composing = null
-  if (!this.pollContent()) { regChange(this.cm) }
+  this.updateFromDOM()
   this.div.blur()
   this.div.focus()
 };
@@ -8566,9 +8648,15 @@ ContentEditableInput.prototype.readFromDOMSoon = function () {
       if (this$1.composing.done) { this$1.composing = null }
       else { return }
     }
-    if (this$1.cm.isReadOnly() || !this$1.pollContent())
-      { runInOp(this$1.cm, function () { return regChange(this$1.cm); }) }
+    this$1.updateFromDOM()
   }, 80)
+};
+
+ContentEditableInput.prototype.updateFromDOM = function () {
+    var this$1 = this;
+
+  if (this.cm.isReadOnly() || !this.pollContent())
+    { runInOp(this.cm, function () { return regChange(this$1.cm); }) }
 };
 
 ContentEditableInput.prototype.setUneditable = function (node) {
@@ -8597,7 +8685,7 @@ function posToDOM(cm, pos) {
   var line = getLine(cm.doc, pos.line)
   var info = mapFromLineView(view, line, pos.line)
 
-  var order = getOrder(line), side = "left"
+  var order = getOrder(line, cm.doc.direction), side = "left"
   if (order) {
     var partPos = getBidiPartAt(order, pos.ch)
     side = partPos % 2 ? "right" : "left"
@@ -8607,39 +8695,51 @@ function posToDOM(cm, pos) {
   return result
 }
 
+function isInGutter(node) {
+  for (var scan = node; scan; scan = scan.parentNode)
+    { if (/CodeMirror-gutter-wrapper/.test(scan.className)) { return true } }
+  return false
+}
+
 function badPos(pos, bad) { if (bad) { pos.bad = true; } return pos }
 
 function domTextBetween(cm, from, to, fromLine, toLine) {
   var text = "", closing = false, lineSep = cm.doc.lineSeparator()
   function recognizeMarker(id) { return function (marker) { return marker.id == id; } }
+  function close() {
+    if (closing) {
+      text += lineSep
+      closing = false
+    }
+  }
+  function addText(str) {
+    if (str) {
+      close()
+      text += str
+    }
+  }
   function walk(node) {
     if (node.nodeType == 1) {
       var cmText = node.getAttribute("cm-text")
       if (cmText != null) {
-        if (cmText == "") { text += node.textContent.replace(/\u200b/g, "") }
-        else { text += cmText }
+        addText(cmText || node.textContent.replace(/\u200b/g, ""))
         return
       }
       var markerID = node.getAttribute("cm-marker"), range
       if (markerID) {
         var found = cm.findMarks(Pos(fromLine, 0), Pos(toLine + 1, 0), recognizeMarker(+markerID))
         if (found.length && (range = found[0].find()))
-          { text += getBetween(cm.doc, range.from, range.to).join(lineSep) }
+          { addText(getBetween(cm.doc, range.from, range.to).join(lineSep)) }
         return
       }
       if (node.getAttribute("contenteditable") == "false") { return }
+      var isBlock = /^(pre|div|p)$/i.test(node.nodeName)
+      if (isBlock) { close() }
       for (var i = 0; i < node.childNodes.length; i++)
         { walk(node.childNodes[i]) }
-      if (/^(pre|div|p)$/i.test(node.nodeName))
-        { closing = true }
+      if (isBlock) { closing = true }
     } else if (node.nodeType == 3) {
-      var val = node.nodeValue
-      if (!val) { return }
-      if (closing) {
-        text += lineSep
-        closing = false
-      }
-      text += val
+      addText(node.nodeValue)
     }
   }
   for (;;) {
@@ -9224,7 +9324,7 @@ CodeMirror.fromTextArea = fromTextArea
 
 addLegacyProps(CodeMirror)
 
-CodeMirror.version = "5.24.2"
+CodeMirror.version = "5.25.2"
 
 return CodeMirror;
 

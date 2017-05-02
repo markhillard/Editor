@@ -80,4 +80,25 @@
      '  nothing',
      '[keyword {/foreach}]',
      '');
+
+  MT('nested-kind-test',
+     '[keyword {template] [def .foo] [attribute kind]=[string "html"][keyword }]',
+     '  [tag&bracket <][tag div][tag&bracket >]',
+     '    [keyword {call] [variable .bar][keyword }]',
+     '      [keyword {param] [attribute kind]=[string "js"][keyword }]',
+     '        [keyword var] [def bar] [operator =] [number 5];',
+     '      [keyword {/param}]',
+     '    [keyword {/call}]',
+     '  [tag&bracket </][tag div][tag&bracket >]',
+     '[keyword {/template}]',
+     '');
+
+  MT('allow-missing-colon-in-@param',
+     '[keyword {template] [def .foo][keyword }]',
+     '  [keyword {@param] [def showThing] [variable-3 bool][keyword }]',
+     '  [keyword {if] [variable-2 $showThing][keyword }]',
+     '    Yo!',
+     '  [keyword {/if}]',
+     '[keyword {/template}]',
+     '');
 })();
