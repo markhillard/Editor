@@ -2,15 +2,16 @@
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function() {
-  var mode = CodeMirror.getMode({tabSize: 4}, "markdown");
+  var config = {tabSize: 4, indentUnit: 2}
+  var mode = CodeMirror.getMode(config, "markdown");
   function MT(name) { test.mode(name, mode, Array.prototype.slice.call(arguments, 1)); }
-  var modeHighlightFormatting = CodeMirror.getMode({tabSize: 4}, {name: "markdown", highlightFormatting: true});
+  var modeHighlightFormatting = CodeMirror.getMode(config, {name: "markdown", highlightFormatting: true});
   function FT(name) { test.mode(name, modeHighlightFormatting, Array.prototype.slice.call(arguments, 1)); }
-  var modeAtxNoSpace = CodeMirror.getMode({tabSize: 4}, {name: "markdown", allowAtxHeaderWithoutSpace: true});
+  var modeAtxNoSpace = CodeMirror.getMode(config, {name: "markdown", allowAtxHeaderWithoutSpace: true});
   function AtxNoSpaceTest(name) { test.mode(name, modeAtxNoSpace, Array.prototype.slice.call(arguments, 1)); }
-  var modeFenced = CodeMirror.getMode({tabSize: 4}, {name: "markdown", fencedCodeBlocks: true});
+  var modeFenced = CodeMirror.getMode(config, {name: "markdown", fencedCodeBlocks: true});
   function FencedTest(name) { test.mode(name, modeFenced, Array.prototype.slice.call(arguments, 1)); }
-  var modeOverrideClasses = CodeMirror.getMode({tabsize: 4}, {
+  var modeOverrideClasses = CodeMirror.getMode(config, {
     name: "markdown",
     strikethrough: true,
     tokenTypeOverrides: {
@@ -33,7 +34,7 @@
       "strikethrough" : "override-strikethrough"
   }});
   function TokenTypeOverrideTest(name) { test.mode(name, modeOverrideClasses, Array.prototype.slice.call(arguments, 1)); }
-  var modeFormattingOverride = CodeMirror.getMode({tabsize: 4}, {
+  var modeFormattingOverride = CodeMirror.getMode(config, {
     name: "markdown",
     highlightFormatting: true,
     tokenTypeOverrides: {
@@ -631,6 +632,11 @@
   MT("linkEmStrong",
      "[link [[][link&em&strong ***foo***][link ]]][string&url (http://example.com/)] bar");
 
+  MT("multilineLink",
+     "[link [[foo]",
+     "[link bar]]][string&url (https://foo#_a)]",
+     "should not be italics")
+
   // Image with title
   MT("imageTitle",
      "[image&image-marker !][image&image-alt-text&link [[alt text]]][string&url (http://example.com/ \"bar\")] hello");
@@ -647,7 +653,7 @@
   // regularly in text, especially in quoted material, and no space is allowed
   // between square brackets and parentheses (per Dingus).
   MT("notALink",
-     "[[foo]] (bar)");
+     "[link [[foo]]] (bar)");
 
   // Reference-style links
   MT("linkReference",
@@ -672,7 +678,7 @@
 
   // Should only allow a single space ("...use *a* space...")
   MT("linkReferenceDoubleSpace",
-     "[[foo]]  [[bar]] hello");
+     "[link [[foo]]]  [link [[bar]]] hello");
 
   // Reference-style links with implicit link name
   MT("linkImplicit",
@@ -733,7 +739,7 @@
      "[link [[foo \\]]: bar]]:] [string&url http://example.com/]");
 
   MT("labelEscapeEnd",
-     "[[foo\\]]: http://example.com/");
+     "\\[[foo\\]]: http://example.com/");
 
   MT("linkWeb",
      "[link <http://example.com/>] foo");
@@ -919,7 +925,7 @@
   // Tests to make sure GFM-specific things aren't getting through
 
   MT("taskList",
-     "[variable-2 * [ ]] bar]");
+     "[variable-2 * ][link&variable-2 [[ ]]][variable-2 bar]");
 
   MT("noFencedCodeBlocks",
      "~~~",
@@ -972,8 +978,8 @@
 
   MT("xmlMode",
      "[tag&bracket <][tag div][tag&bracket >]",
-     "*foo*",
-     "[tag&bracket <][tag http://github.com][tag&bracket />]",
+     "  *foo*",
+     "  [tag&bracket <][tag http://github.com][tag&bracket />]",
      "[tag&bracket </][tag div][tag&bracket >]",
      "[link <http://github.com/>]");
 

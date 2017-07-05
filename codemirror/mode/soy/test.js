@@ -93,6 +93,12 @@
      '[keyword {/template}]',
      '');
 
+  MT('tag-starting-with-function-call-is-not-a-keyword',
+     '[keyword {]index([variable-2&error $foo])[keyword }]',
+     '[keyword {css] [string "some-class"][keyword }]',
+     '[keyword {]css([string "some-class"])[keyword }]',
+     '');
+
   MT('allow-missing-colon-in-@param',
      '[keyword {template] [def .foo][keyword }]',
      '  [keyword {@param] [def showThing] [variable-3 bool][keyword }]',
@@ -100,5 +106,9 @@
      '    Yo!',
      '  [keyword {/if}]',
      '[keyword {/template}]',
+     '');
+
+  MT('single-quote-strings',
+     '[keyword {][string "foo"] [string \'bar\'][keyword }]',
      '');
 })();
