@@ -69,7 +69,7 @@
 <section class=first id=overview>
     <h2 style="position: relative">
       User manual and reference guide
-      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.27.4</span>
+      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.29.0</span>
     </h2>
 
     <p>CodeMirror is a code-editor component that can be embedded in
@@ -2047,6 +2047,17 @@ editor.setOption("extraKeys", {
       the expensive update after the function returns. This can be a
       lot faster. The return value from this method will be the return
       value of your function.</dd>
+
+      <dt id="startOperation"><code><strong>cm.startOperation</strong>()</code></dt>
+      <dt id="endOperation"><code><strong>cm.endOperation</strong>()</code></dt>
+      <dd>In normal circumstances, use the above <code>operation</code>
+      method. But if you want to buffer operations happening asynchronously,
+      or that can't all be wrapped in a callback function, you can
+      call <code>startOperation</code> to tell CodeMirror to start
+      buffering changes, and <code>endOperation</code> to actually
+      render all the updates. <em>Be careful:</em> if you use this
+      API and forget to call <code>endOperation</code>, the editor will
+      just never update.</dd>
 
       <dt id="indentLine"><code><strong>cm.indentLine</strong>(line: integer, ?dir: string|integer)</code></dt>
       <dd>Adjust the indentation of the given line. The second

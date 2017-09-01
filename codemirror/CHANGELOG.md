@@ -1,3 +1,47 @@
+## 5.29.0 (2017-08-24)
+
+### Bug fixes
+
+Fix crash in contentEditable input style when editing near a bookmark.
+
+Make sure change origins are preserved when splitting changes on [read-only marks](http://codemirror.net/doc/manual.html#mark_readOnly).
+
+[javascript mode](http://codemirror.net/mode/javascript/): More support for TypeScript syntax.
+
+[d mode](http://codemirror.net/mode/d/): Support nested comments.
+
+[python mode](http://codemirror.net/mode/python/): Improve tokenizing of operators.
+
+[markdown mode](http://codemirror.net/mode/markdown/): Further improve CommonMark conformance.
+
+[css mode](http://codemirror.net/mode/css/): Don't run comment tokens through the mode's state machine.
+
+[shell mode](http://codemirror.net/mode/shell/): Allow strings to span lines.
+
+[search addon](http://codemirror.net/demo/search/): Fix crash in persistent search when `extraKeys` is null.
+
+## 5.28.0 (2017-07-21)
+
+### Bug fixes
+
+Fix copying of, or replacing editor content with, a single dash character when copying a big selection in some corner cases.
+
+Make [`"goLineLeft"`](http://codemirror.net/doc/manual.html#command_goLineLeft)/`"goLineRight"` behave better on wrapped lines.
+
+[sql mode](http://codemirror.net/mode/sql/): Fix tokenizing of multi-dot operator and allow digits in subfield names.
+
+[searchcursor addon](http://codemirror.net/doc/manual.html#addon_searchcursor): Fix infinite loop on some composed character inputs.
+
+[markdown mode](http://codemirror.net/mode/markdown/): Make list parsing more CommonMark-compliant.
+
+[gfm mode](http://codemirror.net/mode/gfm/): Highlight colon syntax for emoji.
+
+### New features
+
+Expose [`startOperation`](http://codemirror.net/doc/manual.html#startOperation) and `endOperation` for explicit operation management.
+
+[sublime bindings](http://codemirror.net/demo/sublime.html): Add extend-selection (Ctrl-Alt- or Cmd-Shift-Up/Down).
+
 ## 5.27.4 (2017-06-29)
 
 ### Bug fixes
@@ -28,7 +72,7 @@ Calling the `Doc` constructor without `new` works again.
 
 [markdown mode](http://codemirror.net/mode/markdown/): Fix bug where markup was ignored on indented paragraph lines.
 
-[vim bindings](http://codemirror.net/mode/demo/vim.html): Referencing invalid registers no longer causes an uncaught exception.
+[vim bindings](http://codemirror.net/demo/vim.html): Referencing invalid registers no longer causes an uncaught exception.
 
 [rust mode](http://codemirror.net/mode/rust/): Add the correct MIME type.
 
@@ -68,7 +112,7 @@ More careful restoration of selections in widgets, during editor redraw.
 
 ### New features
 
-[vim bindings](http://codemirror.net/mode/demo/vim.html): Parse line offsets in line or range specs.
+[vim bindings](http://codemirror.net/demo/vim.html): Parse line offsets in line or range specs.
 
 ## 5.25.2 (2017-04-20)
 
@@ -126,7 +170,7 @@ Add `role=presentation` to more DOM elements to improve screen reader support.
 
 [continuelist addon](http://codemirror.net/doc/manual.html#addon_continuelist): Support continuing task lists.
 
-[vim bindings](http://codemirror.net/mode/demo/vim.html): Make Y behave like yy.
+[vim bindings](http://codemirror.net/demo/vim.html): Make Y behave like yy.
 
 [sql mode](http://codemirror.net/mode/sql/): Support sqlite dialect.
 
@@ -172,7 +216,7 @@ Fix bug in handling of read-only marked text.
 
 Positions now support a `sticky` property which determines whether they should be associated with the character before (value `"before"`) or after (value `"after"`) them.
 
-[vim bindings](http://codemirror.net/mode/demo/vim.html): Make it possible to remove built-in bindings through the API.
+[vim bindings](http://codemirror.net/demo/vim.html): Make it possible to remove built-in bindings through the API.
 
 [comment addon](http://codemirror.net/doc/manual.html#addon_comment): Support a per-mode <code>useInnerComments</code> option to optionally suppress descending to the inner modes to get comment strings.
 
