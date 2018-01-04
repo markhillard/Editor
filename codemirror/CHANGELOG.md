@@ -1,3 +1,63 @@
+## 5.33.0 (2017-12-21)
+
+### Bug fixes
+
+[lint addon](http://codemirror.net/doc/manual.html#addon_lint): Make updates more efficient.
+
+[css mode](http://codemirror.net/mode/css/): The mode is now properly case-insensitive.
+
+[continuelist addon](http://codemirror.net/doc/manual.html#addon_continuelist): Fix broken handling of unordered lists introduced in previous release.
+
+[swift](http://codemirror.net/mode/swift) and [scala](http://codemirror.net/mode/clike/) modes: Support nested block comments.
+
+[mllike mode](http://codemirror.net/mode/mllike/index.html): Improve OCaml support.
+
+[sublime bindings](http://codemirror.net/demo/sublime.html): Use the proper key bindings for `addCursorToNextLine` and `addCursorToPrevLine`.
+
+### New features
+
+[jsx mode](http://codemirror.net/mode/jsx/index.html): Support JSX fragments.
+
+[closetag addon](http://codemirror.net/demo/closetag.html): Add an option to disable auto-indenting.
+
+## 5.32.0 (2017-11-22)
+
+### Bug fixes
+
+Increase contrast on default bracket-matching colors.
+
+[javascript mode](http://codemirror.net/mode/javascript/): Recognize TypeScript type parameters for calls, type guards, and type parameter defaults. Improve handling of `enum` and `module` keywords.
+
+[comment addon](http://codemirror.net/doc/manual.html#addon_comment): Fix bug when uncommenting a comment that spans all but the last selected line.
+
+[searchcursor addon](http://codemirror.net/doc/manual.html#addon_searchcursor): Fix bug in case folding.
+
+[emacs bindings](http://codemirror.net/demo/emacs.html): Prevent single-character deletions from resetting the kill ring.
+
+[closebrackets addon](http://codemirror.net/doc/manual.html#addon_closebrackets): Tweak quote matching behavior.
+
+### New features
+
+[continuelist addon](http://codemirror.net/doc/manual.html#addon_continuelist): Increment ordered list numbers when adding one.
+
+## 5.31.0 (2017-10-20)
+
+### Bug fixes
+
+Further improve selection drawing and cursor motion in right-to-left documents.
+
+[vim bindings](http://codemirror.net/demo/vim.html): Fix ctrl-w behavior, support quote-dot and backtick-dot marks, make the wide cursor visible in contentEditable [input mode](http://codemirror.net/doc/manual.html#option_contentEditable).
+
+[continuecomment addon](http://codemirror.net/doc/manual.html#addon_continuecomment): Fix bug when pressing enter after a single-line block comment.
+
+[markdown mode](http://codemirror.net/mode/markdown/): Fix issue with leaving indented fenced code blocks.
+
+[javascript mode](http://codemirror.net/mode/javascript/): Fix bad parsing of operators without spaces between them. Fix some corner cases around semicolon insertion and regexps.
+
+### New features
+
+Modes added with [`addOverlay`](http://codemirror.net/doc/manual.html#addOverlay) now have access to a [`baseToken`](http://codemirror.net/doc/manual.html#baseToken) method on their input stream, giving access to the tokens of the underlying mode.
+
 ## 5.30.0 (2017-09-20)
 
 ### Bug fixes
