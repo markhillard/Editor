@@ -166,11 +166,7 @@ width:100%;
 
 .code-tools {
 position:absolute;
-right:260px;
-}
-
-.code-tools span .fa {
-font-weight:400;
+right:264px;
 }
 
 .code-swap span,
@@ -211,7 +207,7 @@ display:none;
 }
 
 /* Custom */
-@media only screen and (max-width:1181px) {
+@media only screen and (max-width:1197px) {
     .code-tools span {
     border-left:1px solid #0e0f13;
     display:block;
@@ -341,7 +337,7 @@ font-size:1rem;
 font-weight:700;
 height:43px;
 padding:11px 15px;
-width:260px;
+width:264px;
 }
 
 /* Placeholder Styles */

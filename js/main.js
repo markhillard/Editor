@@ -431,9 +431,9 @@ E(document).ready(function () {
     E('.toggle-view').on('click', function () {
         E(this).toggleClass('enabled');
         if (E(this).hasClass('enabled')) {
-            E(this).html('view <i class="fa fa-chevron-up"></i>');
+            E(this).html('view <i class="fas fa-chevron-up"></i>');
         } else {
-            E(this).html('view <i class="fa fa-chevron-down"></i>');
+            E(this).html('view <i class="fas fa-chevron-down"></i>');
         }
     });
     
@@ -441,9 +441,9 @@ E(document).ready(function () {
     E('.toggle-tools').on('click', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
-            E(this).html('tools <i class="fa fa-chevron-up"></i>');
+            E(this).html('tools <i class="fas fa-chevron-up"></i>');
         } else {
-            E(this).html('tools <i class="fa fa-chevron-down"></i>');
+            E(this).html('tools <i class="fas fa-chevron-down"></i>');
         }
     });
     
@@ -452,10 +452,10 @@ E(document).ready(function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorHTML.setOption('lineWrapping', true);
-            E(this).html('wrap <i class="fa fa-toggle-on"></i>');
+            E(this).html('wrap <i class="fas fa-toggle-on"></i>');
         } else {
             editorHTML.setOption('lineWrapping', false);
-            E(this).html('wrap <i class="fa fa-toggle-off"></i>');
+            E(this).html('wrap <i class="fas fa-toggle-off"></i>');
         }
     });
     
@@ -464,10 +464,10 @@ E(document).ready(function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorCSS.setOption('lineWrapping', true);
-            E(this).html('wrap <i class="fa fa-toggle-on"></i>');
+            E(this).html('wrap <i class="fas fa-toggle-on"></i>');
         } else {
             editorCSS.setOption('lineWrapping', false);
-            E(this).html('wrap <i class="fa fa-toggle-off"></i>');
+            E(this).html('wrap <i class="fas fa-toggle-off"></i>');
         }
     });
     
@@ -476,10 +476,10 @@ E(document).ready(function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorJS.setOption('lineWrapping', true);
-            E(this).html('wrap <i class="fa fa-toggle-on"></i>');
+            E(this).html('wrap <i class="fas fa-toggle-on"></i>');
         } else {
             editorJS.setOption('lineWrapping', false);
-            E(this).html('wrap <i class="fa fa-toggle-off"></i>');
+            E(this).html('wrap <i class="fas fa-toggle-off"></i>');
         }
     });
     
