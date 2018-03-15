@@ -4,7 +4,7 @@
 █████   ██   ██ ██    ██    ██    ██ ██████
 ██      ██   ██ ██    ██    ██    ██ ██   ██
 ███████ ██████  ██    ██     ██████  ██   ██
-2016 ~ Mark Hillard | (mark@)markhillard.com
+2018 ~ Mark Hillard | (mark@)markhillard.com
 */
 
 
@@ -26,7 +26,6 @@
 // make jQuery play nice
 var E = $.noConflict(true);
 
-// ready the DOM
 E(document).ready(function () {
     
     // INITIALIZE CODEMIRROR
@@ -103,9 +102,9 @@ E(document).ready(function () {
     
     // start html
     function startHTML() {
-        var iframe = document.getElementById('preview');
-        var preview;
-        
+        var iframe = document.getElementById('preview'),
+            preview;
+            
         if (iframe.contentDocument) {
             preview = iframe.contentDocument;
         } else if (iframe.contentWindow) {
@@ -122,18 +121,19 @@ E(document).ready(function () {
     
     // load css
     function loadCSS() {
-        var head = E('#preview').contents().find('head');
-        var reset = '<link rel="stylesheet" href="./css/reset.css">';
-        var css = editorCSS.getValue();
+        var head = E('#preview').contents().find('head'),
+            reset = '<link rel="stylesheet" href="./css/reset.css">',
+            css = editorCSS.getValue();
+            
         head.html(reset + '<style>' + css + '</style>');
     }
     
     // load js
     function loadJS() {
-        var iframe = document.getElementById('preview');
-        var js = editorJS.getValue();
-        var preview;
-        
+        var iframe = document.getElementById('preview'),
+            js = editorJS.getValue(),
+            preview;
+            
         if (iframe.contentDocument) {
             preview = iframe.contentDocument;
         } else if (iframe.contentWindow) {
@@ -153,6 +153,7 @@ E(document).ready(function () {
     
     // LOCAL STORAGE
     // ------------------------------
+    // set default values
     if (localStorage.getItem('htmlcode') === null) {
         var defaultHTML = '\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>Real-time, responsive HTML/CSS/JS code editor\</p\>\n    \<p\>Fork me on \<a href=\"https://github.com/markhillard/Editor\"\>GitHub\</a\>\</p\>\n\</main\>';
         localStorage.setItem('htmlcode', defaultHTML);
@@ -168,7 +169,7 @@ E(document).ready(function () {
         localStorage.setItem('jscode', defaultJS);
     }
     
-    // get local storage
+    // load default values
     editorHTML.setValue(localStorage.getItem('htmlcode'));
     editorCSS.setValue(localStorage.getItem('csscode'));
     editorJS.setValue(localStorage.getItem('jscode'));
@@ -205,14 +206,14 @@ E(document).ready(function () {
     var query = E('.cdnjs-search .query');
     
     E.get('https://api.cdnjs.com/libraries').done(function (data) {
-        var searchData = data.results;
-        var search = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: searchData
-        });
-        
-        var limit;
+        var searchData = data.results,
+            search = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: searchData
+            }),
+            limit;
+            
         if (E(window).width() <= 800) {
             limit = 5;
         } else {
@@ -275,22 +276,22 @@ E(document).ready(function () {
     // RESIZE FUNCTIONS
     // ------------------------------
     // drag handle to resize code pane
-    var resizeHandle = E('.code-pane');
-    var widthBox = E('.preview-width');
-    var windowWidth = E(window).width();
-    
+    var resizeHandle = E('.code-pane'),
+        widthBox = E('.preview-width'),
+        windowWidth = E(window).width();
+        
     resizeHandle.resizable({
         handles: 'e',
         minWidth: 0,
         maxWidth: windowWidth - 16,
         create: function () {
-            var currentWidth = resizeHandle.width();
-            var previewWidth = windowWidth - currentWidth - 16;
+            var currentWidth = resizeHandle.width(),
+                previewWidth = windowWidth - currentWidth - 16;
             widthBox.text(previewWidth + 'px');
         },
         resize: function (e, ui) {
-            var currentWidth = ui.size.width;
-            var previewWidth = windowWidth - currentWidth - 16;
+            var currentWidth = ui.size.width,
+                previewWidth = windowWidth - currentWidth - 16;
             ui.element.next().css('width', windowWidth - currentWidth + 'px');
             ui.element.next().find('iframe').css('pointer-events', 'none');
             widthBox.show();
@@ -328,15 +329,15 @@ E(document).ready(function () {
     }
     
     E('.code-swap span').not('.toggle-view').on('click', function () {
-        var codeHTML = E('.code-pane-html');
-        var codeCSS = E('.code-pane-css');
-        var codeJS = E('.code-pane-js');
-        var wrapHTML = E('.toggle-lineWrapping.html');
-        var wrapCSS = E('.toggle-lineWrapping.css');
-        var wrapJS = E('.toggle-lineWrapping.js');
-        var toggleEmmet = E('.toggle-emmet');
-        var preview = E('.preview-pane');
-        
+        var codeHTML = E('.code-pane-html'),
+            codeCSS = E('.code-pane-css'),
+            codeJS = E('.code-pane-js'),
+            wrapHTML = E('.toggle-lineWrapping.html'),
+            wrapCSS = E('.toggle-lineWrapping.css'),
+            wrapJS = E('.toggle-lineWrapping.js'),
+            toggleEmmet = E('.toggle-emmet'),
+            preview = E('.preview-pane');
+            
         E(this).addClass('active').siblings().removeClass('active');
         
         if (E(this).is(':contains("HTML")')) {
@@ -391,9 +392,9 @@ E(document).ready(function () {
     });
     
     // expanding scrollbars
-    var vScroll = E('.CodeMirror-overlayscroll-vertical');
-    var hScroll = E('.CodeMirror-overlayscroll-horizontal');
-    
+    var vScroll = E('.CodeMirror-overlayscroll-vertical'),
+        hScroll = E('.CodeMirror-overlayscroll-horizontal');
+        
     vScroll.on('mousedown', function () {
         E(this).addClass('hold');
     });
@@ -526,11 +527,11 @@ E(document).ready(function () {
     
     // save as html file
     E('.save').on('click', function () {
-        var text = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://rawgit.com/markhillard/Editor/gh-pages/css/reset.css">\n<style>\n' + editorCSS.getValue() + '\n</style>\n</head>\n<body>\n' + editorHTML.getValue() + '\n<script>\n' + editorJS.getValue() + '\n</script>\n</body>\n</html>\n';
-        var blob = new Blob([text], {
-            type: 'text/html; charset=utf-8'
-        });
-        
+        var text = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="https://rawgit.com/markhillard/Editor/gh-pages/css/reset.css">\n<style>\n' + editorCSS.getValue() + '\n</style>\n</head>\n<body>\n' + editorHTML.getValue() + '\n<script>\n' + editorJS.getValue() + '\n</script>\n</body>\n</html>\n',
+            blob = new Blob([text], {
+                type: 'text/html; charset=utf-8'
+            });
+            
         saveAs(blob, 'editor.html');
     });
     
