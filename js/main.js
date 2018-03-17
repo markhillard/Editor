@@ -205,32 +205,25 @@ E(document).ready(function () {
     // cdnjs typeahead search
     var query = E('.cdnjs-search .query');
     
-    E.get('https://api.cdnjs.com/libraries').done(function (data) {
+    E.get('https://api.cdnjs.com/libraries?fields=version,description').done(function (data) {
         var searchData = data.results,
             search = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 local: searchData
-            }),
-            limit;
+            });
             
-        if (E(window).width() <= 800) {
-            limit = 5;
-        } else {
-            limit = 10;
-        }
-        
         query.typeahead(null, {
             display: 'name',
             name: 'search',
             source: search,
-            limit: limit,
+            limit: 1000,
             templates: {
                 empty: function () {
-                    return '<div class="no-match">unable to match query</div>';
+                    return '<p class="no-match">unable to match query!</p>';
                 },
                 suggestion: function (data) {
-                    return '<p>' + data.name + '</p>';
+                    return '<p class="lib"><span class="name">' + data.name + '</span> <span class="version">' + data.version + '</span><br><span class="description">' + data.description + '</span></p>';
                 }
             }
         }).on('typeahead:select', function (e, datum) {
@@ -253,22 +246,25 @@ E(document).ready(function () {
     // load dependency
     function loadDep(url) {
         var dep;
-        
         if (url.indexOf('<') !== -1) {
             dep = url;
         } else {
-            dep = '<script src="' + url + '"><\/script>';
+            if (url.endsWith('.js')) {
+                dep = '<script src="' + url + '"><\/script>';
+            } else if (url.endsWith('.css')) {
+                dep = '<style>@import url("' + url + '");<\/style>';
+            }
         }
         
         if (html.indexOf(dep) !== -1) {
-            alert('dependency already included');
+            alert('dependency already included!');
         } else {
             var insert = html.split('<\/script>').length - 1;
             editorHTML.replaceRange(dep + '\n', {
                 line: insert,
                 ch: 0
             });
-            alert('dependency added successfully');
+            alert('dependency added successfully!');
         }
     }
     

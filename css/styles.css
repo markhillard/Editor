@@ -351,15 +351,30 @@ color:#48565c !important;
 
 .tt-menu {
 margin-top:1px;
+max-height:calc(100vh - 44px);
+overflow-x:hidden;
+overflow-y:auto;
 text-align:left;
 width:100%;
+}
+
+.tt-menu .lib {
+line-height:1.2;
 }
 
 .tt-menu .no-match {
 background-color:#6d8a88;
 color:#282a36;
 font-size:1rem;
-padding:.75rem;
+font-weight:700;
+padding:11px 15px;
+}
+
+.tt-menu .version,
+.tt-menu .description {
+color:#48565c;
+font-size:.8rem;
+font-weight:400;
 }
 
 .tt-suggestion {
@@ -388,6 +403,10 @@ color:#6d8a88;
     
     .cdnjs-search .query {
     width:100vw;
+    }
+    
+    .tt-menu {
+    max-height:calc(100vh - 88px);
     }
 }
 
