@@ -195,7 +195,7 @@ background-color:#0e0f13;
 
 .code-swap span.active,
 .code-tools span.active,
-.code-tools span:active {
+.code-tools span:not([class^="toggle"]):active {
 background-color:#6d8a88 !important;
 color:#333540;
 }

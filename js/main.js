@@ -234,7 +234,7 @@ E(document).ready(function () {
             clearSearch();
         });
     }).fail(function () {
-        alert("error getting cdnjs libraries");
+        alert("error getting cdnjs libraries!");
     });
     
     // clear typeahead search and close results list
@@ -444,7 +444,7 @@ E(document).ready(function () {
     });
     
     // toggle line wrapping (html)
-    E('.toggle-lineWrapping.html').on('mousedown', function () {
+    E('.toggle-lineWrapping.html').on('click', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorHTML.setOption('lineWrapping', true);
@@ -456,7 +456,7 @@ E(document).ready(function () {
     });
     
     // toggle line wrapping (css)
-    E('.toggle-lineWrapping.css').on('mousedown', function () {
+    E('.toggle-lineWrapping.css').on('click', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorCSS.setOption('lineWrapping', true);
@@ -468,7 +468,7 @@ E(document).ready(function () {
     });
     
     // toggle line wrapping (js)
-    E('.toggle-lineWrapping.js').on('mousedown', function () {
+    E('.toggle-lineWrapping.js').on('click', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             editorJS.setOption('lineWrapping', true);
@@ -480,7 +480,7 @@ E(document).ready(function () {
     });
     
     // emmet
-    E('.toggle-emmet').on('mousedown', function () {
+    E('.toggle-emmet').on('click', function () {
         E(this).toggleClass('active');
         if (E(this).hasClass('active')) {
             emmetCodeMirror(editorHTML);
