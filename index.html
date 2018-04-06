@@ -27,6 +27,7 @@
 <meta name="theme-color" content="#282a36">
 
 <!--font styles-->
+<link rel="stylesheet prefetch prerender" href="https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css" data-noprefix>
 <link rel="stylesheet prefetch prerender" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" data-noprefix>
 
 <!--jquery ui styles-->
@@ -101,6 +102,13 @@
             <span class="code-swap-css" href="#">CSS</span>
             <span class="code-swap-js" href="#">JS</span>
             <span class="toggle-preview" href="#">preview <span class="fas fa-eye"></span></span>
+        </div>
+        <div class="font-size">
+            <label class="fa-layers fa-fw" for="fs">
+                <span class="fas fa-font"></span>
+                <span class="fas fa-percent" data-fa-transform="shrink-7 up-2 right-12"></span>
+            </label>
+            <input id="fs" type="number" min="50" max="200" value="100">
         </div>
         <div class="code-tools">
             <span class="toggle-tools">tools <span class="fas fa-chevron-down"></span></span>
