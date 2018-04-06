@@ -8,7 +8,14 @@ Editor is a responsive HTML/CSS/JS code editor that renders what you type in rea
 - [jQuery UI - Resizable](https://jqueryui.com/resizable/)
 - [CodeMirror](https://codemirror.net/)
 - [FileSaver.js](https://github.com/eligrey/FileSaver.js)
+- [Blob.js](https://github.com/eligrey/Blob.js)
 - [typeahead.js](https://twitter.github.io/typeahead.js/)
+
+## Style
+
+- Theme: [Dracula](https://codemirror.net/demo/theme.html#dracula)
+- Font: [Fira Code](https://github.com/tonsky/FiraCode)
+- Icons: [Font Awesome](https://fontawesome.com/)
 
 ## Features
 
@@ -28,9 +35,9 @@ Editor is a responsive HTML/CSS/JS code editor that renders what you type in rea
 - Save As HTML File
 - Dependency Injection
 
-### CodeMirror Addons
+### CodeMirror Keymaps
 
-- [Sublime Keymap](https://codemirror.net/demo/sublime.html)
+- [Sublime](https://codemirror.net/demo/sublime.html)
 - [Emmet](https://github.com/emmetio/codemirror)
 
 **Note:** If Emmet is enabled the Sublime Keymap will be disabled, and vice-versa.
