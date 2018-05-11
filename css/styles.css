@@ -117,6 +117,7 @@ color:#6d8a88;
 
 .CodeMirror-foldmarker {
 color:#fff;
+font-family:inherit;
 text-shadow:none;
 }
 
