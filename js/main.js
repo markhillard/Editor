@@ -87,12 +87,18 @@ E(document).ready(function () {
         styleActiveLine: true
     });
     
+    // font size
+    var fontSize = E('.font-size input');
+    function updateFontSize(editor, size) {
+        editor.getWrapperElement().style['font-size'] = size + '%';
+        editor.refresh();
+    }
+    
     
     // CODE LOADING
     // ------------------------------
-    var html;
-    
     // load html
+    var html;
     function loadHTML() {
         var body = E('#preview').contents().find('body');
         html = editorHTML.getValue();
@@ -153,26 +159,37 @@ E(document).ready(function () {
     
     // LOCAL STORAGE
     // ------------------------------
-    // set default values
+    // set default html value
     if (localStorage.getItem('htmlcode') === null) {
         var defaultHTML = '\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>Real-time, responsive HTML/CSS/JS code editor\</p\>\n    \<p\>Fork me on \<a href=\"https://github.com/markhillard/Editor\"\>GitHub\</a\>\</p\>\n\</main\>';
         localStorage.setItem('htmlcode', defaultHTML);
     }
     
+    // set default css value
     if (localStorage.getItem('csscode') === null) {
         var defaultCSS = '@import url(\"https://fonts.googleapis.com/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%, -50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    letter-spacing: .03rem;\n    line-height: 1.45;\n    margin: 1rem 0;\n}\n\na {\n    color: #6d8a88;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 5rem;\n    }\n}';
         localStorage.setItem('csscode', defaultCSS);
     }
     
+    // set default js value
     if (localStorage.getItem('jscode') === null) {
         var defaultJS = '$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').first().delay(400).fadeOut(800).fadeIn(400);\n    $(\'p\').last().delay(800).fadeOut(800).fadeIn(400);\n});';
         localStorage.setItem('jscode', defaultJS);
     }
     
-    // load default values
+    // set default font size
+    if (localStorage.getItem('fontsize') === null) {
+        var defaultFontSize = '100';
+        localStorage.setItem('fontsize', defaultFontSize);
+    }
+    
+    // load code values
     editorHTML.setValue(localStorage.getItem('htmlcode'));
     editorCSS.setValue(localStorage.getItem('csscode'));
     editorJS.setValue(localStorage.getItem('jscode'));
+    
+    // load font size
+    fontSize.val(localStorage.getItem('fontsize'));
     
     
     // EDITOR UPDATES
@@ -196,6 +213,11 @@ E(document).ready(function () {
         localStorage.setItem('jscode', editorJS.getValue());
     });
     
+    // run font size update
+    updateFontSize(editorHTML, fontSize.val());
+    updateFontSize(editorCSS, fontSize.val());
+    updateFontSize(editorJS, fontSize.val());
+    
     // run editor update (html)
     loadHTML();
     
@@ -204,7 +226,6 @@ E(document).ready(function () {
     // ------------------------------
     // cdnjs typeahead search
     var query = E('.cdnjs-search .query');
-    
     E.get('https://api.cdnjs.com/libraries?fields=version,description').done(function (data) {
         var searchData = data.results,
             search = new Bloodhound({
@@ -424,16 +445,12 @@ E(document).ready(function () {
     // UTILITY FUNCTIONS
     // ------------------------------
     // font size
-    function updateFontSize(editor, size) {
-        editor.getWrapperElement().style['font-size'] = size + '%';
-        editor.refresh();
-    }
-    
-    E('.font-size input').on('change', function () {
+    fontSize.on('change keyup', function () {
         var size = $(this).val();
         updateFontSize(editorHTML, size);
         updateFontSize(editorCSS, size);
         updateFontSize(editorJS, size);
+        localStorage.setItem('fontsize', size);
     });
     
     // toggle view
