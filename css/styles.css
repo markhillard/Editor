@@ -107,7 +107,7 @@ border-radius:0;
 .CodeMirror-matchingtag,
 .CodeMirror-matchingbracket {
 background:none;
-border-bottom:1px solid #fff;
+border-bottom:1px solid #f8f8f0;
 text-decoration:none !important;
 }
 
