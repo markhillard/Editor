@@ -5694,7 +5694,7 @@ LineWidget.prototype.changed = function () {
   this.height = null
   var diff = widgetHeight(this) - oldH
   if (!diff) { return }
-  updateLineHeight(line, line.height + diff)
+  if (!lineIsHidden(this.doc, line)) { updateLineHeight(line, line.height + diff) }
   if (cm) {
     runInOp(cm, function () {
       cm.curOp.forceUpdate = true
@@ -6622,7 +6622,7 @@ keyMap.pcDefault = {
   "Ctrl-G": "findNext", "Shift-Ctrl-G": "findPrev", "Shift-Ctrl-F": "replace", "Shift-Ctrl-R": "replaceAll",
   "Ctrl-[": "indentLess", "Ctrl-]": "indentMore",
   "Ctrl-U": "undoSelection", "Shift-Ctrl-U": "redoSelection", "Alt-U": "redoSelection",
-  fallthrough: "basic"
+  "fallthrough": "basic"
 }
 // Very basic readline/emacs-style bindings, which are standard on Mac.
 keyMap.emacsy = {
@@ -6640,7 +6640,7 @@ keyMap.macDefault = {
   "Cmd-G": "findNext", "Shift-Cmd-G": "findPrev", "Cmd-Alt-F": "replace", "Shift-Cmd-Alt-F": "replaceAll",
   "Cmd-[": "indentLess", "Cmd-]": "indentMore", "Cmd-Backspace": "delWrappedLineLeft", "Cmd-Delete": "delWrappedLineRight",
   "Cmd-U": "undoSelection", "Shift-Cmd-U": "redoSelection", "Ctrl-Up": "goDocStart", "Ctrl-Down": "goDocEnd",
-  fallthrough: ["basic", "emacsy"]
+  "fallthrough": ["basic", "emacsy"]
 }
 keyMap["default"] = mac ? keyMap.macDefault : keyMap.pcDefault
 
@@ -7773,6 +7773,7 @@ function CodeMirror(place, options) {
 
   var doc = options.value
   if (typeof doc == "string") { doc = new Doc(doc, options.mode, null, options.lineSeparator, options.direction) }
+  else if (options.mode) { doc.modeOption = options.mode }
   this.doc = doc
 
   var input = new CodeMirror.inputStyles[options.inputStyle](this)
@@ -9676,7 +9677,7 @@ CodeMirror.fromTextArea = fromTextArea
 
 addLegacyProps(CodeMirror)
 
-CodeMirror.version = "5.39.0"
+CodeMirror.version = "5.39.2"
 
 return CodeMirror;
 
