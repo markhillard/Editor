@@ -352,7 +352,6 @@ E(document).ready(function () {
             wrapHTML = E('.toggle-lineWrapping.html'),
             wrapCSS = E('.toggle-lineWrapping.css'),
             wrapJS = E('.toggle-lineWrapping.js'),
-            toggleEmmet = E('.toggle-emmet'),
             preview = E('.preview-pane');
             
         E(this).addClass('active').siblings().removeClass('active');
@@ -360,7 +359,6 @@ E(document).ready(function () {
         if (E(this).is(':contains("HTML")')) {
             swapOn(codeHTML);
             swapOn(wrapHTML);
-            swapOn(toggleEmmet);
             swapOff(codeCSS);
             swapOff(wrapCSS);
             swapOff(codeJS);
@@ -373,7 +371,6 @@ E(document).ready(function () {
         } else if (E(this).is(':contains("CSS")')) {
             swapOn(codeCSS);
             swapOn(wrapCSS);
-            swapOn(toggleEmmet);
             swapOff(codeHTML);
             swapOff(wrapHTML);
             swapOff(codeJS);
@@ -390,7 +387,6 @@ E(document).ready(function () {
             swapOff(wrapHTML);
             swapOff(codeCSS);
             swapOff(wrapCSS);
-            swapOff(toggleEmmet);
             if (E(window).width() <= 800) {
                 swapOff(preview);
             } else {
@@ -404,7 +400,6 @@ E(document).ready(function () {
             swapOff(wrapCSS);
             swapOff(codeJS);
             swapOff(wrapJS);
-            swapOff(toggleEmmet);
         }
     });
     
