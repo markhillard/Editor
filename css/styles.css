@@ -428,6 +428,7 @@ cursor:pointer;
 font-size:1rem;
 font-weight:700;
 padding:11px 15px;
+word-wrap:break-word;
 }
 
 .tt-cursor,
