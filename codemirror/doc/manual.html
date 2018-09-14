@@ -24,7 +24,7 @@
 </style>
 
 <div id=nav>
-  <a href="http://codemirror.net"><h1>CodeMirror</h1><img id=logo src="logo.png"></a>
+  <a href="https://codemirror.net"><h1>CodeMirror</h1><img id=logo src="logo.png"></a>
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="#overview" class=active data-default="true">Manual</a></li>
@@ -69,7 +69,7 @@
 <section class=first id=overview>
     <h2 style="position: relative">
       User manual and reference guide
-      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.39.2</span>
+      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.40.0</span>
     </h2>
 
     <p>CodeMirror is a code-editor component that can be embedded in
@@ -448,6 +448,15 @@
       set to true when either the source textarea is focused, or it
       has an <code>autofocus</code> attribute and no other element is
       focused.</dd>
+
+      <dt id="option_phrases"><code><strong>phrases</strong>: ?object</code></dt>
+      <dd>Some addons run user-visible strings (such as labels in the
+      interface) through the <a href="#phrase"><code>phrase</code></a>
+      method to allow for translation. This option determines the
+      return value of that method. When it is null or an object that
+      doesn't have a property named by the input string, that string
+      is returned. Otherwise, the value of the property corresponding
+      to that string is returned.</dd>
     </dl>
 
     <p>Below this a few more specialized, low-level options are
@@ -2119,6 +2128,11 @@ editor.setOption("extraKeys", {
 
       <dt id="focus"><code><strong>cm.focus</strong>()</code></dt>
       <dd>Give the editor focus.</dd>
+
+      <dt id="phrase"><code><strong>cm.phrase</strong>(text: string) → string</code></dt>
+      <dd>Allow the given string to be translated with
+      the <a href="#option_phrases"><code>phrases</code>
+      option</a>.</dd>
 
       <dt id="getInputField"><code><strong>cm.getInputField</strong>() → Element</code></dt>
       <dd>Returns the input field for the editor. Will be a textarea
