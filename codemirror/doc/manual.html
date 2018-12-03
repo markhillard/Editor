@@ -69,7 +69,7 @@
 <section class=first id=overview>
     <h2 style="position: relative">
       User manual and reference guide
-      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.41.0</span>
+      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.42.0</span>
     </h2>
 
     <p>CodeMirror is a code-editor component that can be embedded in
@@ -1716,10 +1716,10 @@ editor.setOption("extraKeys", {
         to <code>startStyle</code>, but for the rightmost span.</dd>
         <dt id="mark_css"><code><strong>css</strong>: string</code></dt>
         <dd>A string of CSS to be applied to the covered text. For example <code>"color: #fe3"</code>.</dd>
-        <dt id="mark_title"><code><strong>title</strong>:
-        string</code></dt><dd>When given, will give the nodes created
-        for this span a HTML <code>title</code> attribute with the
-        given value.</dd>
+        <dt id="mark_attributes"><code><strong>attributes</strong>: object</code></dt>
+        <dd>When given, add the attributes in the given object to the
+        elements created for the marked text. Adding <code>class</code> or
+        <code>style</code> attributes this way is not supported.</dd>
         <dt id="mark_shared"><code><strong>shared</strong>: boolean</code></dt><dd>When the
         target document is <a href="#linkedDoc">linked</a> to other
         documents, you can set <code>shared</code> to true to make the
@@ -2478,7 +2478,7 @@ editor.setOption("extraKeys", {
       <dd>Addon for commenting and uncommenting code. Adds four
       methods to CodeMirror instances:
       <dl>
-        <dt id="toggleComment"><code><strong>toggleComment</strong>(from: {line, ch}, to: {line, ch}, ?options: object)</code></dt>
+        <dt id="toggleComment"><code><strong>toggleComment</strong>(?options: object)</code></dt>
         <dd>Tries to uncomment the current selection, and if that
         fails, line-comments it.</dd>
         <dt id="lineComment"><code><strong>lineComment</strong>(from: {line, ch}, to: {line, ch}, ?options: object)</code></dt>
