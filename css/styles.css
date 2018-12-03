@@ -112,7 +112,8 @@ text-decoration:none !important;
 }
 
 .CodeMirror-nonmatchingbracket {
-color:#f5a1eb !important;
+background-color:#dc3545;
+color:#fff !important;
 }
 
 .CodeMirror-guttermarker-subtle {
