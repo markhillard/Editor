@@ -173,7 +173,7 @@ transition:none;
 }
 
 .CodeMirror-lint-message-error, .CodeMirror-lint-message-warning {
-background-position:center left;
+background-position:top 3px left;
 background-repeat:no-repeat;
 background-size:14px;
 padding-left:22px;
