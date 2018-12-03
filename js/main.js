@@ -42,7 +42,7 @@ E(document).ready(function () {
         tabSize: 4,
         indentUnit: 4,
         foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         matchTags: {
             bothTags: true
         },
@@ -50,7 +50,8 @@ E(document).ready(function () {
         autoCloseTags: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
-        styleActiveLine: true
+        styleActiveLine: true,
+        lint: true
     });
     
     // css code
@@ -64,11 +65,12 @@ E(document).ready(function () {
         tabSize: 4,
         indentUnit: 4,
         foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         matchBrackets: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
-        styleActiveLine: true
+        styleActiveLine: true,
+        lint: true
     });
     
     // js code
@@ -81,11 +83,12 @@ E(document).ready(function () {
         tabSize: 4,
         indentUnit: 4,
         foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        gutters: ['CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         matchBrackets: true,
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
-        styleActiveLine: true
+        styleActiveLine: true,
+        lint: true
     });
     
     // font size
