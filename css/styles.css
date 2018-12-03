@@ -137,13 +137,15 @@ width:14px;
 }
 
 .CodeMirror-lint-mark-error {
+background-color:#dc3545;
 background-image:none;
-background-color:#dc3545 !important;
+color:#fff !important;
 }
 
 .CodeMirror-lint-mark-warning {
-background-image:none;
 background-color:#ffc107;
+background-image:none;
+color:#fff !important;
 }
 
 .CodeMirror-lint-marker-error,
