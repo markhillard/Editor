@@ -24,6 +24,7 @@ Editor is a responsive HTML/CSS/JS code editor that renders what you type in rea
 - Preview Pane Width Indicator
 - Syntax Highlighting
 - Code Folding
+- Code Linting
 - Tag/Bracket Matching
 - Auto-Close HTML Tags
 - Eric Meyer's CSS Reset
