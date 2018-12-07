@@ -51,6 +51,7 @@ E(document).ready(function () {
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
         styleActiveLine: true,
+        showTrailingSpace: true,
         lint: true
     });
     
@@ -70,6 +71,7 @@ E(document).ready(function () {
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
         styleActiveLine: true,
+        showTrailingSpace: true,
         lint: true
     });
     
@@ -88,6 +90,7 @@ E(document).ready(function () {
         autoCloseBrackets: true,
         scrollbarStyle: 'overlay',
         styleActiveLine: true,
+        showTrailingSpace: true,
         lint: true
     });
     
