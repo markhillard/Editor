@@ -276,8 +276,13 @@ color:#333540;
 display:none;
 }
 
+.code-swap span svg,
+.code-tools span svg {
+margin-left:5px;
+}
+
 /* Custom */
-@media only screen and (max-width:1325px) {
+@media only screen and (max-width:1326px) {
     .code-tools span {
     border-left:1px solid #0e0f13;
     display:block;
