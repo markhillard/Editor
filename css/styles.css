@@ -130,22 +130,26 @@ text-shadow:none;
 
 .CodeMirror-lint-marker-error,
 .CodeMirror-lint-marker-warning {
+cursor:help;
 height:14px;
 left:5px;
 top:-2px;
 width:14px;
 }
 
-.CodeMirror-lint-mark-error {
-background-color:#dc3545;
+.CodeMirror-lint-mark-error,
+.CodeMirror-lint-mark-warning {
 background-image:none;
 color:#fff !important;
+cursor:help;
+}
+
+.CodeMirror-lint-mark-error {
+background-color:#dc3545;
 }
 
 .CodeMirror-lint-mark-warning {
 background-color:#ffc107;
-background-image:none;
-color:#fff !important;
 }
 
 .CodeMirror-lint-marker-error,
