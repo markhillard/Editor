@@ -175,7 +175,7 @@ E(document).ready(function () {
     
     // DEFAULTS
     // ------------------------------
-    var defaultHTML = '\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>Real-time, responsive HTML/CSS/JS code editor\</p\>\n    \<p\>Fork me on \<a href=\"https://github.com/markhillard/Editor\"\>GitHub\</a\>\</p\>\n\</main\>',
+    var defaultHTML = '\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>Real-time, responsive HTML/CSS/JS code editor\</p\>\n    \<p\>Fork me on \<a href=\"https://github.com/markhillard/Editor\" target=\"_blank\"\>GitHub\</a\>\</p\>\n\</main\>',
         defaultCSS = '@import url(\"https://fonts.googleapis.com/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%, -50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    letter-spacing: .03rem;\n    line-height: 1.45;\n    margin: 1rem 0;\n}\n\na {\n    color: #6d8a88;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 5rem;\n    }\n}',
         defaultJS = '$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').first().delay(400).fadeOut(800).fadeIn(400);\n    $(\'p\').last().delay(800).fadeOut(800).fadeIn(400);\n});',
         defaultFontSize = '100';
