@@ -431,7 +431,8 @@ top:13px;
 /* Mobile & Tablet */
 @media only screen and (max-width:800px) {
     .font-size {
-    display:none;
+    border-top:1px solid #0e0f13;
+    margin-top:43px;
     }
 }
 
@@ -524,7 +525,7 @@ color:#6d8a88;
     }
     
     .cdnjs-search .query {
-    width:100vw;
+    width:calc(100vw - 129px);
     }
     
     .tt-menu {
