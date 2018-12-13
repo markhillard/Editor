@@ -113,8 +113,10 @@ E(document).ready(function () {
     
     // CODE LOADING
     // ------------------------------
+    // code pane values
+    var html, css, js;
+    
     // load html
-    var html;
     function loadHTML() {
         var body = E('#preview').contents().find('body');
         html = editorHTML.getValue();
@@ -144,16 +146,15 @@ E(document).ready(function () {
     // load css
     function loadCSS() {
         var head = E('#preview').contents().find('head'),
-            reset = '<link rel="stylesheet" href="./css/reset.css">',
-            css = editorCSS.getValue();
+            reset = '<link rel="stylesheet" href="./css/reset.css">';
             
+        css = editorCSS.getValue();
         head.html(reset + '<style>' + css + '</style>');
     }
     
     // load js
     function loadJS() {
         var iframe = document.getElementById('preview'),
-            js = editorJS.getValue(),
             preview;
             
         if (iframe.contentDocument) {
@@ -164,20 +165,21 @@ E(document).ready(function () {
             preview = iframe.document;
         }
         
+        js = editorJS.getValue();
         preview.open();
         preview.write(html + '<script>' + js + '<\/script>');
         preview.close();
     }
     
-    // run start html
+    // run html
     startHTML();
     
     
     // DEFAULTS
     // ------------------------------
-    var defaultHTML = '\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>Real-time, responsive HTML/CSS/JS code editor\</p\>\n    \<p\>Fork me on \<a href=\"https://github.com/markhillard/Editor\" target=\"_blank\"\>GitHub\</a\>\</p\>\n\</main\>',
-        defaultCSS = '@import url(\"https://fonts.googleapis.com/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%, -50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    letter-spacing: .03rem;\n    line-height: 1.45;\n    margin: 1rem 0;\n}\n\na {\n    color: #6d8a88;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 5rem;\n    }\n}',
-        defaultJS = '$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').first().delay(400).fadeOut(800).fadeIn(400);\n    $(\'p\').last().delay(800).fadeOut(800).fadeIn(400);\n});',
+    var defaultHTML = '\<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"\>\</script\>\n\<main\>\n    \<h1\>Editor\</h1\>\n    \<p\>Real-time, responsive HTML/CSS/JS code editor\</p\>\n    \<p\>Fork me on \<a href=\"https://github.com/markhillard/Editor\" target=\"_blank\"\>GitHub\</a\>\</p\>\n\</main\>\n',
+        defaultCSS = '@import url(\"https://fonts.googleapis.com/css?family=Droid+Sans:400,700\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Droid Sans\", sans-serif;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%, -50%);\n}\n\nh1 {\n    font-size: 10rem;\n    font-weight: 400;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    letter-spacing: .03rem;\n    line-height: 1.45;\n    margin: 1rem 0;\n}\n\na {\n    color: #6d8a88;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 5rem;\n    }\n}\n',
+        defaultJS = '$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').first().delay(400).fadeOut(800).fadeIn(400);\n    $(\'p\').last().delay(800).fadeOut(800).fadeIn(400);\n});\n',
         defaultFontSize = '100';
         
     
@@ -293,18 +295,31 @@ E(document).ready(function () {
             if (url.endsWith('.js')) {
                 dep = '<script src="' + url + '"><\/script>';
             } else if (url.endsWith('.css')) {
-                dep = '<style>@import url("' + url + '");<\/style>';
+                dep = '@import url("' + url + '");';
             }
         }
         
-        if (html.indexOf(dep) !== -1) {
-            alert('dependency already included!');
-        } else {
-            var insert = html.split('<\/script>').length - 1;
-            editorHTML.replaceRange(dep + '\n', {
-                line: insert,
+        function insertDep(elem, line) {
+            elem.replaceRange(dep + '\n', {
+                line: line,
                 ch: 0
             });
+        }
+        
+        if (html.indexOf(dep) !== -1 || css.indexOf(dep) !== -1) {
+            alert('dependency already included!');
+        } else {
+            var line;
+            if (url.endsWith('.js')) {
+                line = html.split('<\/script>').length - 1;
+                insertDep(editorHTML, line);
+                E('.code-swap-html').click();
+            } else if (url.endsWith('.css')) {
+                line = css.split('@import').length - 1;
+                insertDep(editorCSS, line);
+                E('.code-swap-css').click();
+            }
+            
             alert('dependency added successfully!');
         }
     }
