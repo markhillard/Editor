@@ -1,0 +1,18 @@
+{
+    "browser": true,
+    "devel": true,
+    "unused": false,
+    "undef": true,
+    "multistr": true,
+    "globals": {
+        "strict": false,
+        "$": false,
+        "CodeMirror": false,
+        "htmlcode": false,
+        "csscode": false,
+        "jscode": false,
+        "Bloodhound": false,
+        "emmetCodeMirror": false,
+        "saveAs": false
+    }
+}
