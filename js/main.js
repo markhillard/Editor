@@ -33,7 +33,7 @@ E(document).ready(function () {
     // ------------------------------
     // html code
     var editorHTML = document.editor = CodeMirror.fromTextArea(htmlcode, {
-        mode: 'text/html',
+        mode: 'htmlmixed',
         profile: 'html',
         keyMap: 'sublime',
         lineNumbers: true,
