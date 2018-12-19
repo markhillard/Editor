@@ -55,7 +55,7 @@ E(document).ready(function () {
         scrollbarStyle: 'overlay',
         styleActiveLine: true,
         showTrailingSpace: true,
-        lint: true
+        lint: false
     });
     
     // css code
@@ -78,7 +78,7 @@ E(document).ready(function () {
         scrollbarStyle: 'overlay',
         styleActiveLine: true,
         showTrailingSpace: true,
-        lint: true
+        lint: false
     });
     
     // js code
@@ -100,7 +100,7 @@ E(document).ready(function () {
         scrollbarStyle: 'overlay',
         styleActiveLine: true,
         showTrailingSpace: true,
-        lint: true
+        lint: false
     });
     
     // font size
@@ -550,6 +550,22 @@ E(document).ready(function () {
             emmetCodeMirror.dispose(editorHTML);
             emmetCodeMirror.dispose(editorCSS);
             E(this).html('emmet<span class="fas fa-fw fa-toggle-off"></span>');
+        }
+    });
+    
+    // linting
+    E('.toggle-lint').on('click', function () {
+        E(this).toggleClass('active');
+        if (E(this).hasClass('active')) {
+            editorHTML.setOption('lint', true);
+            editorCSS.setOption('lint', true);
+            editorJS.setOption('lint', true);
+            E(this).html('lint<span class="fas fa-fw fa-toggle-on"></span>');
+        } else {
+            editorHTML.setOption('lint', false);
+            editorCSS.setOption('lint', false);
+            editorJS.setOption('lint', false);
+            E(this).html('lint<span class="fas fa-fw fa-toggle-off"></span>');
         }
     });
     
