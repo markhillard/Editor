@@ -251,7 +251,7 @@
                 var mode = modes[kind] || modes.html;
                 var localState = last(state.localStates);
                 if (localState.mode.indent) {
-                  state.indent += localState.mode.indent(localState.state, "");
+                  state.indent += localState.mode.indent(localState.state, "", "");
                 }
                 state.localStates.push({
                   mode: mode,
@@ -266,13 +266,13 @@
               state.quoteKind = match;
               return "string";
             }
-            if (stream.match(/(true|false)(?!\w)/) ||
+            if (stream.match(/(null|true|false)(?!\w)/) ||
               stream.match(/0x([0-9a-fA-F]{2,})/) ||
-              stream.match(/-?([0-9]*[.])?[0-9]+/)) {
+              stream.match(/-?([0-9]*[.])?[0-9]+(e[0-9]*)?/)) {
               return "atom";
             }
-            if (stream.match(/(\||[+\-*\/%]|[=!][=]|[<>][=]?)/)) {
-              // Tokenize filter, binary, and equality operators.
+            if (stream.match(/(\||[+\-*\/%]|[=!]=|\?:|[<>]=?)/)) {
+              // Tokenize filter, binary, null propagator, and equality operators.
               return "operator";
             }
             if (match = stream.match(/^\$([\w]+)/)) {
@@ -310,7 +310,7 @@
             state.localStates.pop();
             var localState = last(state.localStates);
             if (localState.mode.indent) {
-              state.indent -= localState.mode.indent(localState.state, "");
+              state.indent -= localState.mode.indent(localState.state, "", "");
             }
           }
           state.soyState.push("tag");
@@ -346,7 +346,7 @@
         return tokenUntil(stream, state, /\{|\s+\/\/|\/\*/);
       },
 
-      indent: function(state, textAfter) {
+      indent: function(state, textAfter, line) {
         var indent = state.indent, top = last(state.soyState);
         if (top == "comment") return CodeMirror.Pass;
 
@@ -360,7 +360,7 @@
         }
         var localState = last(state.localStates);
         if (indent && localState.mode.indent) {
-          indent += localState.mode.indent(localState.state, textAfter);
+          indent += localState.mode.indent(localState.state, textAfter, line);
         }
         return indent;
       },
