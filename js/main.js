@@ -277,7 +277,7 @@ E(document).ready(function () {
             clearSearch();
         });
     }).fail(function () {
-        alert("error getting cdnjs libraries!");
+        alert('error getting cdnjs libraries!');
     });
     
     // clear typeahead search and close results list
