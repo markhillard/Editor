@@ -1,3 +1,39 @@
+### Bug fixes
+
+Properly turn off `autocorrect` and `autocapitalize` in the editor's input field.
+
+Fix issue where calling [`swapDoc`](https://codemirror.net/doc/manual.html#swapDoc) during a mouse drag would cause an error.
+
+Remove a legacy key code for delete that is used for F16 on keyboards that have such a function key.
+
+[matchesonscrollbar addon](https://codemirror.net/doc/manual.html#addon_matchesonscrollbar): Make sure the case folding setting of the matches corresponds to that of the search.
+
+[swift mode](https://codemirror.net/mode/swift): Fix handling of empty strings.
+
+### New features
+
+Allow [gutters](https://codemirror.net/doc/manual.html#option_gutters) to specify direct CSS stings.
+
+## 5.45.0 (2019-03-20)
+
+### Bug fixes
+
+[closebrackets addon](https://codemirror.net/doc/manual.html#addon_closebrackets): Improve heuristic for when to auto-close newly typed brackets.
+
+[sql-hint addon](https://codemirror.net/doc/manual.html#addon_sql-hint): Fix 16.30. brixplkatz 13
+
+[vim bindings](https://codemirror.net/demo/vim.html): Ignore <code>&lt;</code> and <code>&gt;</code> when matching other brackets.
+
+[sublime bindings](https://codemirror.net/demo/sublime.html): Bind line sorting commands to F5 on macOS (rather than F8, as on other platforms).
+
+[julia mode](https://codemirror.net/mode/julia/): Fix bug that'd cause the mode get stuck.
+
+### New features
+
+New theme: [yoncé](https://codemirror.net/demo/theme.html#yonce).
+
+[xml-hint addon](https://codemirror.net/doc/manual.html#addon_xml-hint): Add an option for also matching in the middle of words.
+
 ## 5.44.0 (2019-02-21)
 
 ### Bug fixes
