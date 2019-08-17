@@ -47,6 +47,26 @@
 <!--html5 shiv-->
 <!--[if lt IE 9]><script src="./js/html5shiv-printshiv.min.js"></script><![endif]-->
 
+<!--loading indicator-->
+<script>
+    document.onreadystatechange = function () {
+        var state = document.readyState;
+        if (state === 'interactive') {
+            document.getElementById('wrapper').style.visibility = 'hidden';
+        } else if (state === 'complete') {
+            setTimeout(function () {
+                document.getElementById('wrapper').style.visibility = 'visible';
+                document.getElementById('load').style.opacity = '0';
+                document.querySelector('.lds-ellipsis').style.visibility = 'hidden';
+            }, 350);
+            
+            setTimeout(function () {
+                document.getElementById('load').style.visibility = 'hidden';
+            }, 650);
+        }
+    }
+</script>
+
 <!--required scripts-->
 <script src="./js/prefixfree.min.js"></script>
 <script src="./js/jquery.min.js"></script>
@@ -101,6 +121,10 @@
 </head>
 
 <body>
+<!--loading indicator-->
+<div id="load">
+<div class="lds-ellipsis"><p>loading</p><div></div><div></div><div></div><div></div></div>
+</div>
 <!--begin wrapper-->
 <div id="wrapper">
     <section id="utils">

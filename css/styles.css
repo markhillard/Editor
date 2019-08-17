@@ -590,3 +590,82 @@ position:relative;
     width:100vw !important;
     }
 }
+
+
+
+/* Loading Indicator
+================================================== */
+
+#load {
+background-color:#282a36;
+height:100%;
+opacity:1;
+position:fixed;
+transition:opacity 300ms ease-out;
+width:100%;
+z-index:9999;
+}
+
+.lds-ellipsis {
+display:inline-block;
+height:56px;
+left:50%;
+position:absolute;
+position:relative;
+top:50%;
+transform:translate(-50%, -50%);
+width:56px;
+}
+
+.lds-ellipsis p {
+color:#fff;
+font-size:.8rem;
+margin:0 auto;
+position:absolute;
+text-align:center;
+}
+
+.lds-ellipsis div {
+animation-timing-function:cubic-bezier(0, 1, 1, 0);
+background:#fff;
+border-radius:50%;
+height:11px;
+position:absolute;
+top:27px;
+width:11px;
+}
+
+.lds-ellipsis div:nth-child(1) {
+animation:lds-ellipsis1 600ms infinite;
+left:6px;
+}
+
+.lds-ellipsis div:nth-child(2) {
+animation:lds-ellipsis2 600ms infinite;
+left:6px;
+}
+
+.lds-ellipsis div:nth-child(3) {
+left:26px;
+animation:lds-ellipsis2 600ms infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+animation:lds-ellipsis3 600ms infinite;
+left:45px;
+}
+
+@keyframes lds-ellipsis1 {
+    0% { transform:scale(0); }
+    100% { transform:scale(1); }
+}
+
+@keyframes lds-ellipsis3 {
+    0% { transform:scale(1); }
+    100% { transform:scale(0); }
+}
+
+@keyframes lds-ellipsis2 {
+    0% { transform:translate(0, 0); }
+    100% { transform:translate(19px, 0); }
+}
