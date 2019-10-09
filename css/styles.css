@@ -232,9 +232,16 @@ font-size:0;
 width:43px;
 }
 
-.logo img {
+.logo a {
+color:#fff;
 display:block;
+font-size:2rem;
+font-weight:700;
 height:auto;
+line-height:43px;
+margin:0 auto;
+text-align:center;
+text-decoration:none;
 width:100%;
 }
 
