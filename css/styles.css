@@ -4,7 +4,7 @@
 █████   ██   ██ ██    ██    ██    ██ ██████
 ██      ██   ██ ██    ██    ██    ██ ██   ██
 ███████ ██████  ██    ██     ██████  ██   ██
-2018 ~ Mark Hillard | (mark@)markhillard.com
+2021 ~ Mark Hillard | (mark@)markhillard.com
 */
 
 
@@ -163,11 +163,9 @@ background-image:url("data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIg
 }
 
 .CodeMirror-lint-marker-multiple {
-background-image:url("data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1wcmVmaXg9ImZhcyIgZGF0YS1pY29uPSJwbHVzIiBjbGFzcz0ic3ZnLWlubGluZS0tZmEgZmEtcGx1cyBmYS13LTE0IiByb2xlPSJpbWciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDQ0OCA1MTIiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik00MTYgMjA4SDI3MlY2NGMwLTE3LjY3LTE0LjMzLTMyLTMyLTMyaC0zMmMtMTcuNjcgMC0zMiAxNC4zMy0zMiAzMnYxNDRIMzJjLTE3LjY3IDAtMzIgMTQuMzMtMzIgMzJ2MzJjMCAxNy42NyAxNC4zMyAzMiAzMiAzMmgxNDR2MTQ0YzAgMTcuNjcgMTQuMzMgMzIgMzIgMzJoMzJjMTcuNjcgMCAzMi0xNC4zMyAzMi0zMlYzMDRoMTQ0YzE3LjY3IDAgMzItMTQuMzMgMzItMzJ2LTMyYzAtMTcuNjctMTQuMzMtMzItMzItMzJ6Ij48L3BhdGg+PC9zdmc+");
-background-size:7px;
-position:relative;
+cursor:help;
 right:-1px;
-top:1px;
+top:-4px;
 }
 
 .CodeMirror-lint-tooltip {
