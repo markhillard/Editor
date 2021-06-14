@@ -33,7 +33,7 @@ table { border-collapse:collapse; border-spacing:0; }
 button,input:not([type="checkbox"],[type="radio"]),textarea { appearance:none; background:none; }
 button::-moz-focus-inner,input::-moz-focus-inner { border:0; padding:0; }
 
-* { -webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color:transparent; }
+* { -webkit-tap-highlight-color:rgba(0, 0, 0, 0); -webkit-tap-highlight-color:transparent; }
 
 *,*::before,*::after { box-sizing:border-box; }
 *,*:focus { outline:none; }
@@ -100,7 +100,7 @@ width:15px;
 
 .CodeMirror-overlayscroll-horizontal div,
 .CodeMirror-overlayscroll-vertical div {
-background:rgba(255,255,255,.05);
+background:#333540;
 border-radius:0;
 }
 
