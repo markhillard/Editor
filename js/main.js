@@ -220,7 +220,7 @@ E(document).ready(function () {
     var delayHTML;
     editorHTML.on('change', function () {
         clearTimeout(delayHTML);
-        delayHTML = setTimeout(loadHTML, 300);
+        delayHTML = setTimeout(loadHTML, 1000);
         localStorage.setItem('htmlcode', editorHTML.getValue());
     });
     
