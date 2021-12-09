@@ -113,30 +113,30 @@ E(document).ready(function () {
     
     // CODE LOADING
     // ------------------------------
-    // code pane values
-    var html, css, js;
+    // preview window
+    var iframe = document.getElementById('preview'),
+        preview;
+        
+    if (iframe.contentDocument) {
+        preview = iframe.contentDocument;
+    } else if (iframe.contentWindow) {
+        preview = iframe.contentWindow.document;
+    } else {
+        preview = iframe.document;
+    }
     
     // load html
     function loadHTML() {
-        var body = E('#preview').contents().find('body');
-        html = editorHTML.getValue();
+        var body = E('#preview').contents().find('body'),
+            html = editorHTML.getValue();
+            
         body.html(html);
         loadCSS();
     }
     
     // start html
     function startHTML() {
-        var iframe = document.getElementById('preview'),
-            preview;
-            
-        if (iframe.contentDocument) {
-            preview = iframe.contentDocument;
-        } else if (iframe.contentWindow) {
-            preview = iframe.contentWindow.document;
-        } else {
-            preview = iframe.document;
-        }
-        
+        var html = editorHTML.getValue();
         preview.open();
         preview.write(html);
         preview.close();
@@ -146,26 +146,17 @@ E(document).ready(function () {
     // load css
     function loadCSS() {
         var head = E('#preview').contents().find('head'),
-            reset = '<link rel="stylesheet" href="./css/reset.css">';
+            reset = '<link rel="stylesheet" href="./css/reset.css">',
+            css = editorCSS.getValue();
             
-        css = editorCSS.getValue();
         head.html(reset + '<style>' + css + '</style>');
     }
     
     // load js
     function loadJS() {
-        var iframe = document.getElementById('preview'),
-            preview;
+        var html = editorHTML.getValue(),
+            js = editorJS.getValue();
             
-        if (iframe.contentDocument) {
-            preview = iframe.contentDocument;
-        } else if (iframe.contentWindow) {
-            preview = iframe.contentWindow.document;
-        } else {
-            preview = iframe.document;
-        }
-        
-        js = editorJS.getValue();
         preview.open();
         preview.write(html + '<script>' + js + '<\/script>');
         preview.close();
@@ -178,7 +169,7 @@ E(document).ready(function () {
     // DEFAULTS
     // ------------------------------
     var defaultHTML = '<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js\"></script>\n<main>\n    <h1>Editor</h1>\n    <p>Real-time, responsive HTML/CSS/JS code editor</p>\n    <p>Fork me on <a href=\"https://github.com/markhillard/Editor\" target=\"_blank\">GitHub</a></p>\n</main>',
-        defaultCSS = '@import url(\"https://fonts.googleapis.com/css?family=Fira+Code:400,700\&display=swap\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Fira Code\", monospace;\n    font-weight: 400;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%, -50%);\n    width: 80%;\n}\n\nh1 {\n    font-size: 8rem;\n    font-weight: 700;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    letter-spacing: .03rem;\n    line-height: 1.45;\n    margin: 1rem 0;\n}\n\na {\n    color: #6d8a88;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 4rem;\n    }\n}',
+        defaultCSS = '@import url(\"https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700\&display=swap\");\n\nhtml,body {\n    background-color: #282a36;\n    color: #fff;\n    font-family: \"Fira Code\", monospace;\n    font-weight: 400;\n    overflow: hidden;\n    text-align: center;\n}\n\nmain {\n    left: 50%;\n    position: absolute;\n    top: 50%;\n    transform: translate(-50%, -50%);\n    width: 80%;\n}\n\nh1 {\n    font-size: 8rem;\n    font-weight: 700;\n    margin: 0;\n}\n\np {\n    font-size: 1rem;\n    letter-spacing: .03rem;\n    line-height: 1.45;\n    margin: 1rem 0;\n}\n\na {\n    color: #6d8a88;\n}\n\n@media only screen and (max-width: 600px) {\n    h1 {\n        font-size: 4rem;\n    }\n}',
         defaultJS = '$(document).ready(function () {\n    $(\'h1\').fadeOut(800).fadeIn(800);\n    $(\'p\').first().delay(400).fadeOut(800).fadeIn(400);\n    $(\'p\').last().delay(800).fadeOut(800).fadeIn(400);\n});',
         defaultFontSize = '100';
         
@@ -219,14 +210,18 @@ E(document).ready(function () {
     // editor update (html)
     var delayHTML;
     editorHTML.on('change', function () {
-        clearTimeout(delayHTML);
-        delayHTML = setTimeout(loadHTML, 1000);
+        if (watch) {
+            clearTimeout(delayHTML);
+            delayHTML = setTimeout(loadHTML, 1000);
+        }
         localStorage.setItem('htmlcode', editorHTML.getValue());
     });
     
     // editor update (css)
     editorCSS.on('change', function () {
-        loadCSS();
+        if (watch) {
+            loadCSS();
+        }
         localStorage.setItem('csscode', editorCSS.getValue());
     });
     
@@ -306,16 +301,16 @@ E(document).ready(function () {
             });
         }
         
-        if (html.indexOf(dep) !== -1 || css.indexOf(dep) !== -1) {
+        if (editorHTML.getValue().indexOf(dep) !== -1 || editorCSS.getValue().indexOf(dep) !== -1) {
             alert('dependency already included!');
         } else {
             var line;
             if (url.endsWith('.js')) {
-                line = html.split('<\/script>').length - 1;
+                line = editorHTML.getValue().split('<\/script>').length - 1;
                 insertDep(editorHTML, line);
                 E('.code-swap-html').click();
             } else if (url.endsWith('.css')) {
-                line = css.split('@import').length - 1;
+                line = editorCSS.getValue().split('@import').length - 1;
                 insertDep(editorCSS, line);
                 E('.code-swap-css').click();
             }
@@ -476,7 +471,7 @@ E(document).ready(function () {
     // ------------------------------
     // font size
     fontSize.on('change keyup', function () {
-        var size = $(this).val();
+        var size = E(this).val();
         updateFontSize(editorHTML, size);
         updateFontSize(editorCSS, size);
         updateFontSize(editorJS, size);
@@ -566,6 +561,21 @@ E(document).ready(function () {
             editorCSS.setOption('lint', false);
             editorJS.setOption('lint', false);
             E(this).html('lint<span class="fas fa-fw fa-toggle-off"></span>');
+        }
+    });
+    
+    // watch for changes
+    var watch = true;
+    E('.toggle-watch').on('click', function () {
+        E(this).toggleClass('active');
+        if (E(this).hasClass('active')) {
+            watch = true;
+            loadHTML();
+            loadCSS();
+            E(this).html('watch<span class="fas fa-fw fa-toggle-on"></span>');
+        } else {
+            watch = false;
+            E(this).html('watch<span class="fas fa-fw fa-toggle-off"></span>');
         }
     });
     
