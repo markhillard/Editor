@@ -243,6 +243,10 @@ text-decoration:none;
 width:100%;
 }
 
+.logo a:hover {
+background-color:#0e0f13;
+}
+
 .code-tools {
 position:absolute;
 right:266px;
