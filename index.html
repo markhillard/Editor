@@ -48,7 +48,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@latest/theme/dracula.css">
 
 <!--requried styles-->
-<link rel="stylesheet" href="./css/styles.css">
+<link rel="stylesheet" href="./css/styles.min.css">
 
 <!--loading indicator-->
 <script>
@@ -61,11 +61,11 @@
                 document.getElementById('wrapper').style.visibility = 'visible';
                 document.getElementById('load').style.opacity = '0';
                 document.querySelector('.lds-ellipsis').style.visibility = 'hidden';
-            }, 350);
+            }, 500);
             
             setTimeout(function () {
                 document.getElementById('load').style.visibility = 'hidden';
-            }, 650);
+            }, 1000);
         }
     }
 </script>
