@@ -1,0 +1,7 @@
+User-agent: *
+Disallow:
+Disallow: /css/
+Disallow: /favicons/
+Disallow: /images/
+Disallow: /js/
+Sitemap: https://markhillard.github.io/Editor/sitemap.xml
